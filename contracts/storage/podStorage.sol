@@ -1,40 +1,42 @@
 pragma solidity ^0.6.0;
 
 import "../helper/SafeMath.sol";
-
+    
 contract podStorage {
     
     using SafeMath for uint256;
+    uint256 public runningPodBetId;
+    
+    enum YieldMechanism { AAVE, COMPOUND, YIELD_FARMING }
+    enum WinnigNumbers { SINGLE_WINNER, MULTIPLE_WINNER }
     
     struct betInfo {
-        uint256 betId; // constructor
-        uint256 minimumContribution; //constructor
-        uint256 numOfStakers; // constructor
+        uint256 betId;
+        uint256 minimumContribution;
         uint256 stakerCount;
-        bool isWinnerDeclare; // WinnerDeclation  or reddemPod
-        bool isStakingDone; // DepositPod
-        string betName; //constructor
-        address winnerAddress; // Winner declare during
+        uint256 totalWinner;
+        bool isWinnerDeclare; 
+        string betName;
+        YieldMechanism yieldMechanism; 
+        WinnigNumbers winnigNumbers;
     }
     
     struct betTokens {
         address tokenAddress;
-        address aaveToken;
+        address lendingToken;
     }
     
-    mapping(uint256 => uint256) public timeStamp;
-    mapping(uint256 => address) public betIdMapping; // address manger of bet id
-    mapping(address => uint256[]) public betIdsOfManager;
-    mapping(uint256 => betInfo) public betInfoMapping; // bet info in struct for bet id
-    mapping(uint256 => mapping(address => uint256)) public stakeOnBetId; // amount of stakers on betId
-    mapping(uint256 => uint256) public totalValueOnBet; // totak stake on bet id
-    mapping(uint256 => address[]) public stakersOfBet; // stakers array address for bet id  
+    mapping(uint256 => betInfo) public betInfoMapping;
     mapping(uint256 => betTokens) public betIdTokensMapping;
-    mapping(uint256 => mapping(address => bool)) isRedeem; // redeem money before bet ends
-    
-    uint256 public runningPodBetId;
-    // If true then cant be winner and after completion 
-    //stake will not refund because it is already redeem
+    mapping(uint256 => uint256) public singleWinner;
+    mapping(uint256 => uint256[]) public multipleWinner;
+    mapping(uint256 => uint256) public timeStamp;
+    mapping(uint256 => address) public betIdMapping;
+    mapping(address => uint256[]) public betIdsOfManager;
+    mapping(uint256 => mapping(address => uint256)) public stakeOnBetId;
+    mapping(uint256 => uint256) public totalValueOnBet;
+    mapping(uint256 => address[]) public stakersOfBet;
+    mapping(uint256 => mapping(address => bool)) isRedeem;
     
     function setBetIDManager(uint256 betId, address manager) public {
         betIdMapping[betId] = manager;
@@ -67,67 +69,71 @@ contract podStorage {
     function setBetIDOnConstructor(
         uint256 betId, 
         uint256 minimumContribution, 
-        uint256 numOfStakers, 
+        uint256 _yieldMechanism,
         string memory betName
     ) public {
         betInfoMapping[betId].minimumContribution = minimumContribution;
-        betInfoMapping[betId].numOfStakers = numOfStakers;
         betInfoMapping[betId].betName = betName;
-    }
-    
-    function setStakingDone(uint256 betId) public {
-        betInfoMapping[betId].isStakingDone = true;
-    }
-    
-    function setWinnerDeclare(uint256 betId) public {
-        betInfoMapping[betId].isWinnerDeclare = true;
-    }
-    
-    function setWinnerAddress(uint256 betId, address winnerAddress) public {
-        betInfoMapping[betId].winnerAddress = winnerAddress;
-    }
-    
-    function setTimestamp(uint256 betId, uint256 timestamp) public {
-        // timeStamp[betId] = now + (timestamp*86400);
-        timeStamp[betId] = now.add(timestamp.mul(86400));
-    }
-    
-    function getPodName(uint256 betId) public view returns(string memory) {
-        return betInfoMapping[betId].betName;
-    }
-    
-    function getTimestamp(uint256 betId) public view returns(uint256) {
-        return timeStamp[betId];
+        betInfoMapping[betId].yieldMechanism = YieldMechanism(_yieldMechanism);
     }
     
     function getMinimumContribution(uint256 betId) public view returns(uint256) {
         return betInfoMapping[betId].minimumContribution;
     }
     
-    function getNumOfStakers(uint256 betId) public view returns(uint256) {
-        return betInfoMapping[betId].numOfStakers;
+    function getPodName(uint256 betId) public view returns(string memory) {
+        return betInfoMapping[betId].betName;
     }
     
-    function getStakingDone(uint256 betId) public view returns(bool) {
-        return betInfoMapping[betId].isStakingDone;
+    function getYieldMechanism(uint256 betId) public view returns(uint256) {
+        return uint(betInfoMapping[betId].yieldMechanism);
+    }
+    
+    function setWinnerDeclare(uint256 betId) public {
+        betInfoMapping[betId].isWinnerDeclare = true;
     }
     
     function getWinnerDeclare(uint256 betId) public view returns(bool) {
         return betInfoMapping[betId].isWinnerDeclare;
     }
     
-    function getWinnerAddress(uint256 betId) public view returns(address) {
-        return betInfoMapping[betId].winnerAddress;
+    function setSingleWinnerAddress(uint256 betId, uint256 winnerIndex) public {
+        require(isSingleOrMultipleWinner(betId) == 0);
+        singleWinner[betId] = winnerIndex;
+    }
+    
+    function setMultipleWinnerAddress(uint256 betId, uint256[] memory winnerIndexes) public {
+        require(isSingleOrMultipleWinner(betId) == 1);
+        for (uint256 i = 0; i < winnerIndexes.length; i++) {
+            multipleWinner[betId].push(winnerIndexes[i]);
+        }
+    }
+
+    function isSingleOrMultipleWinner(uint256 betId) public view returns(uint256) {
+        return uint(betInfoMapping[betId].winnigNumbers);
+    }
+    
+    function getSingleWinnerAddress(uint256 betId) public view returns(uint256) {
+        return singleWinner[betId];
+    }
+    
+    function getMultipleWinnerAddress(uint256 betId) public view returns(uint256[] memory) {
+        return multipleWinner[betId];
+    }
+        
+    function setTimestamp(uint256 betId, uint256 timestamp) public {
+        timeStamp[betId] = now.add(timestamp.mul(86400));
+    }
+    
+    function getTimestamp(uint256 betId) public view returns(uint256) {
+        return timeStamp[betId];
     }
 
     function increaseStakerCount(uint256 betId) public {
-        // betInfoMapping[betId].stakerCount = betInfoMapping[betId].stakerCount + 1;
         betInfoMapping[betId].stakerCount = betInfoMapping[betId].stakerCount.add(1);
-
     }
     
     function decreaseStakerCount(uint256 betId) public {
-        // betInfoMapping[betId].stakerCount = betInfoMapping[betId].stakerCount - 1;
         betInfoMapping[betId].stakerCount = betInfoMapping[betId].stakerCount.sub(1);
     }
     
@@ -163,20 +169,20 @@ contract podStorage {
         return stakersOfBet[betId];
     }
     
-    function setBetTokens(uint256 betId, address _tokenAddress, address _aaveToken) public {
+    function getLengthOfStakersARray(uint256 betId) public view returns(uint256) {
+        return stakersOfBet[betId].length;
+    }
+    
+    function setBetTokens(uint256 betId, address _tokenAddress, address _lendingToken) public {
         betIdTokensMapping[betId].tokenAddress = _tokenAddress;
-        betIdTokensMapping[betId].aaveToken = _aaveToken;
+        betIdTokensMapping[betId].lendingToken = _lendingToken;
     }
     
     function getBetTokens(uint256 betId) public view returns(address, address){
         return (
             betIdTokensMapping[betId].tokenAddress,
-            betIdTokensMapping[betId].aaveToken
+            betIdTokensMapping[betId].lendingToken
         ); 
-    }
-    
-    function getLengthOfStakersARray(uint256 betId) public view returns(uint256) {
-        return stakersOfBet[betId].length;
     }
     
     function setRedeemFlagStakerOnBet(uint256 betId, address staker) public {

@@ -13,9 +13,11 @@ import "../interfaces/chainlinkInterface/IchainlinkAlarm.sol";
 import "../interfaces/storageInterface/IPodStorageInterface.sol";
 import "../storage/podStorage.sol";
 import "./PodFactory.sol";
+import "../interfaces/INftInterface.sol";
+
+// aDai kovan : 0x58ad4cb396411b691a9aab6f74545b2c5217fe6a
 
 contract yieldpod {
-    
     using SafeMath for uint256;
     uint256 public nonce = 0;
     uint256 public winnerNumber;
@@ -27,19 +29,16 @@ contract yieldpod {
     uint16 constant private referral = 0;
     ATokenInterface public atoken;
     AaveCoreInterface public aaveCore;
-    
     // yearn
     IYDAI public yDai;
-
     // compound
     CErc20 public cToken;
     
     IERC20 public regularToken;
     IERC20 public lendingToken; // AAVE || yearn || Compound
-
     IPodStorageInterface iPodStorageInterface;
-    
     IchainlinkAlarm iChainlinkAlarm;
+    INftInterface iNftInterface;
     
     // Events
     event Deposit(uint256 amount, address indexed user, address indexed tokenAddress);
@@ -47,22 +46,29 @@ contract yieldpod {
     event multipleWinnerDeclare(uint256 _betId, uint256 interest, uint256[] indexed user);
     event WithDraw(uint256 _betId, uint256 amount, address indexed user, address indexed tokenAddress);
 
-    constructor(uint256 _lendingChoice, uint256 _minimumVal, uint256 timeStamp, 
+    constructor(uint256 _lendingChoice, uint256 _minimumVal, uint256 timeStamp, uint256 totalWinner,
         address _tokenAddress, address _lendingAddress, address _podManager, string memory _betName) 
         public 
     {
-        iPodStorageInterface = IPodStorageInterface(0x9cc2dD17f25Fa44f6fF85Be918bB886C00902369);
+        iPodStorageInterface = IPodStorageInterface(0x6096143b28c632490C8D9bA1e06dfaD9f0a90Cc6);
+        iNftInterface = INftInterface(0x991625bf9330B65345927bBBdf42b8E915c0fa03);
         regularToken = IERC20(_tokenAddress);
         lendingToken = IERC20(_lendingAddress);
-        
         uint256 betId = now;
         
         iPodStorageInterface.setBetTokens(betId, _tokenAddress, _lendingAddress);
         iPodStorageInterface.setBetIDManager(betId, _podManager);
-        iPodStorageInterface.setBetIDOnConstructor(betId, _minimumVal, 0, _betName);
+        iPodStorageInterface.setBetIDOnConstructor(betId, _minimumVal, _lendingChoice, _betName);
         iPodStorageInterface.addNewBetId(betId, _podManager);
         iPodStorageInterface.setTimestamp(betId, timeStamp);
         iPodStorageInterface.setRunningPodBetId(betId);
+        iPodStorageInterface.setTotalWinner(betId, totalWinner);
+        
+        if (totalWinner == 1) {
+            iPodStorageInterface.setWinnerNumbers(betId, 0);
+        } else if (totalWinner > 1) {
+            iPodStorageInterface.setWinnerNumbers(betId, 1);
+        }
         
         if (iPodStorageInterface.getYieldMechanism(betId) == 0) {
             address aaveLendingPoolAddressesProvider = 0x506B0B2CF20FAA8f38a4E2B524EE43e1f4458Cc5;
@@ -76,12 +82,12 @@ contract yieldpod {
             yDai = IYDAI(_lendingAddress);  // Mainnet: 0xACd43E627e64355f1861cEC6d3a6688B31a6F952 
         }
         
-        iChainlinkAlarm = IchainlinkAlarm(0x347baFf15492455b82316F4a8f8D431152f21cCB);
+        iChainlinkAlarm = IchainlinkAlarm(0x8c3d765c553D79B0087F8D93543a3d09f40C5CCD);
         iChainlinkAlarm.delayStart(0x2f90A6D021db21e1B2A077c5a37B3C7E75D15b7e, "a7ab70d561d34eb49e9b1612fd2e044b", timeStamp);
     }
     
     function addStakeOnBet(uint256 _betId, uint256 amount) public {
-        require(!iPodStorageInterface.getWinnerDeclare(_betId), "No more space for stakers");            
+        require(!iPodStorageInterface.getWinnerDeclare(_betId), "Winner is declared");            
         require(iPodStorageInterface.getMinimumContribution(_betId) <= amount, "Amount should be greater or equal to minimumContribution");
         
         iPodStorageInterface.setNewStakerForBet(_betId, msg.sender);
@@ -103,6 +109,8 @@ contract yieldpod {
             regularToken.approve(address(yDai), amount);
             yDai.deposit(amount);
         }        
+        
+        iPodStorageInterface.mintNft(_betId, amount, msg.sender);
         emit Deposit(amount, msg.sender, address(regularToken));
     }
     
@@ -146,6 +154,7 @@ contract yieldpod {
         }  
         
         regularToken.transfer(msg.sender, iPodStorageInterface.getStakeforBet(_betId, msg.sender));
+        iPodStorageInterface.burnNft(_betId, msg.sender);
         emit WithDraw(_betId, iPodStorageInterface.getStakeforBet(_betId, msg.sender), msg.sender, address(regularToken));
     }
     
@@ -159,8 +168,10 @@ contract yieldpod {
                 if(winnerIndex != i) {
                     regularToken.transfer(stakers[i], iPodStorageInterface.getStakeforBet(_betId, stakers[i]));
                 } else {
-                    regularToken.transfer(stakers[i], iPodStorageInterface.getStakeforBet(_betId, stakers[i]).add(interest));
-                }   
+                    iPodStorageInterface.mintInterestNft(_betId, interest, msg.sender);
+                    regularToken.transfer(stakers[i], iPodStorageInterface.getStakeforBet(_betId, stakers[i]));
+                }
+                iPodStorageInterface.burnNft(_betId, stakers[i]);
             }
         }
         emit singleWinnerDeclare(_betId, interest, winnerIndex);
@@ -177,9 +188,11 @@ contract yieldpod {
                     regularToken.transfer(stakers[i], iPodStorageInterface.getStakeforBet(_betId, stakers[i]));
                     winnerTracker = winnerTracker.add(1);
                 } else {
+                    iPodStorageInterface.mintInterestNft(_betId, interest.div(winnerIndexes.length), msg.sender);
                     regularToken.transfer(stakers[i], iPodStorageInterface.getStakeforBet(_betId, stakers[i]).add(interest).div(winnerIndexes.length));
                 }   
             }
+            iPodStorageInterface.burnNft(_betId, stakers[i]);
         }
         emit multipleWinnerDeclare(_betId, interest, winnerIndexes);
     }

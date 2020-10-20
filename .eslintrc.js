@@ -71,7 +71,7 @@ module.exports = {
       { caseSensitive: false },
 
     ],
-
+    'react/react-in-jsx-scope': 'off',
   },
 
   parser: 'babel-eslint',

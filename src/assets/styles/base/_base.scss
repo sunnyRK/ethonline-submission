@@ -1,6 +1,9 @@
 body {
   background-color: #f9fbfd;
   font-family: 'IBM Plex Sans';
+  #__next {
+    height: 100%;
+  }
 }
 
 .card {

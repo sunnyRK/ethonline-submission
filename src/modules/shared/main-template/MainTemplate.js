@@ -3,11 +3,44 @@ import {
   Container, List, Header,
   Grid, Segment,
 } from 'semantic-ui-react';
+import { withRouter } from 'next/router';
 
-const MainTemplate = ({ children, metamaskAddress }) => (
+const menuItems = [
+  {
+    key: 0,
+    value: 'Dashboard',
+    path: '',
+  },
+  {
+    key: 1,
+    value: 'NFTs',
+    path: 'nfts',
+  },
+];
+
+const MainTemplate = ({
+  children, metamaskAddress, router,
+  selectedMenuItem, handleState,
+}) => (
   <div className="main-template">
     <div className="main-header">
       <div className="app-name">Alarm-POD</div>
+      <div className="header-menu-items">
+        {
+          menuItems.map((menuItem, index) => (
+            <div
+              role="presentation"
+              onClick={() => {
+                router.push(`/${menuItem.path}`);
+                handleState({ selectedMenuItem: index });
+              }}
+              className={`menu-items ${selectedMenuItem === index && 'active'}`}
+            >
+              {menuItem.value}
+            </div>
+          ))
+        }
+      </div>
       <div className="metamask-address">{metamaskAddress}</div>
     </div>
     <div className="main-content">
@@ -49,4 +82,4 @@ const MainTemplate = ({ children, metamaskAddress }) => (
   </div>
 );
 
-export default MainTemplate;
+export default withRouter(MainTemplate);

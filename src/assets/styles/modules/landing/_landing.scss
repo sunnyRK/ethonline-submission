@@ -8,14 +8,14 @@
   .pod {
     height: calc(100% - 20px);
     width: calc(100% * (3/4));
-    background-color: #2D325A;
+    background-color: $secondary-app-color;
     padding: 40px;
     border-radius: 30px;
     display: flex;
     flex-direction: column;
     margin: 0 20px 0 40px;
     .pod-name {
-      color: #7279AC;
+      color: $heading-color;
       font-weight: 600;
       display: flex;
       justify-content: center;
@@ -132,7 +132,7 @@
   .right-content {
     height: calc(100% - 20px);
     width: calc(100% * (1/4));
-    background-color: #2D325A;
+    background-color: $secondary-app-color;
     padding: 40px;
     border-radius: 30px;
     display: flex;
@@ -145,7 +145,7 @@
       padding-bottom: 20px;
       border-bottom: 1px solid #848d9063;
       .header {
-        color: #7279AC;
+        color: $heading-color;
         font-weight: 600;
       }
     }
@@ -154,7 +154,7 @@
       padding-bottom: 20px;
       border-bottom: 1px solid #848d9063;
       .header {
-        color: #7279AC;
+        color: $heading-color;
         font-weight: 600;
       }
       .value {
@@ -168,7 +168,7 @@
     .last-pod-winner {
       margin-top: 20px;
       .header {
-        color: #7279AC;
+        color: $heading-color;
         font-weight: 600;
       }
       .winner-info {

@@ -22,6 +22,6 @@ export default class myDocument extends Document {
           }
         `}</style>
       </html>
-    )
+    );
   }
 }

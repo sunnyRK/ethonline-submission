@@ -10,6 +10,7 @@ class MainTemplateContainer extends Component {
     metamaskLoginMessage: '',
     metamaskLoading: false,
     metamaskAddress: '',
+    selectedMenuItem: 0,
   };
 
   async componentDidMount() {
@@ -45,13 +46,23 @@ class MainTemplateContainer extends Component {
     await window.ethereum.enable();
   }
 
+  handleState = (value, callback) => {
+    this.setState(value, () => {
+      if (callback) callback();
+    });
+  }
+
   render() {
     const { children } = this.props;
-    const { displayMessage, metamaskLoginMessage, metamaskAddress } = this.state;
+    const {
+      displayMessage, metamaskLoginMessage, metamaskAddress, selectedMenuItem,
+    } = this.state;
     return (
       <>
         <MainTemplate
           metamaskAddress={metamaskAddress}
+          selectedMenuItem={selectedMenuItem}
+          handleState={this.handleState}
         >
           {children}
         </MainTemplate>

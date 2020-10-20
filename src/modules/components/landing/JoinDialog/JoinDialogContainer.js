@@ -16,7 +16,7 @@ import {
 } from "../../../../../config/instances/contractinstances";
 
 import DaiIcon from '../../../../assets/icons/dai.svg';
-import BatIcon from '../../../../assets/icons/bat.svg';
+import UsdcIcon from '../../../../assets/icons/usdc.svg';
 
 class JoinDialogContainer extends Component {
   constructor(props) {
@@ -44,14 +44,14 @@ class JoinDialogContainer extends Component {
         value: 'DAI',
       },
       {
-        key: 'BAT',
+        key: 'USDC',
         text: (
           <div className="token-price-pair">
-            <img src={BatIcon} className="ui avatar image" alt="coin" />
+            <img src={UsdcIcon} className="ui avatar image" alt="coin" />
             &nbsp;{web3.utils.fromWei(minimumContribution.toString(), "ether")}$
           </div>
         ),
-        value: 'BAT',
+        value: 'USDC',
       },
     ];
     
@@ -87,6 +87,12 @@ class JoinDialogContainer extends Component {
     })
   };
 
+  handleState = (value, callback) => {
+    this.setState(value, () => {
+      if (callback) callback();
+    });
+  }
+
   render() {
     return (
       <Dialog
@@ -106,6 +112,7 @@ class JoinDialogContainer extends Component {
             onJoinClick={this.onJoinClick}
             minimumContribution={this.state.minimumContribution} 
             options={this.state.options}
+            handleState={this.handleState}
           />
 
         </DialogContent>

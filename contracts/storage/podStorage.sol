@@ -16,6 +16,7 @@ contract podStorage {
         uint256 betId;
         uint256 minimumContribution;
         uint256 stakerCount;
+        uint256 winningInterest;
         uint256 totalWinner;
         bool isWinnerDeclare; 
         string betName;
@@ -50,15 +51,17 @@ contract podStorage {
     mapping(uint256 => uint256) public timeStamp;
     mapping(uint256 => address) public betIdMapping;
     mapping(address => uint256[]) public betIdsOfManager;
+    mapping(address => uint256[]) public betIdsOfStaker;
     mapping(uint256 => mapping(address => uint256)) public stakeOnBetId;
     mapping(uint256 => uint256) public totalValueOnBet;
     mapping(uint256 => address[]) public stakersOfBet;
     mapping(uint256 => mapping(address => bool)) isRedeem;
+    mapping(address => uint256) totalWinning;
     
     INftInterface iNftInterface;
     
     constructor() public {
-        iNftInterface = INftInterface(0x991625bf9330B65345927bBBdf42b8E915c0fa03);
+        iNftInterface = INftInterface(0xfCEf30351C167e310Fc4ed65Ff2BD46bAA40C28C);
     }
     
     function setBetIDManager(uint256 betId, address manager) public {
@@ -87,6 +90,18 @@ contract podStorage {
     
     function getLengthOfBetIds(address manager) public view returns(uint256) {
         return betIdsOfManager[manager].length;
+    }
+    
+    function addNewBetIdForStaker(uint256 betId, address staker) public {
+        betIdsOfStaker[staker].push(betId);
+    }
+    
+    function getBetIdArrayOfStaker(address staker) public view returns(uint256[] memory) {
+        return betIdsOfStaker[staker];
+    }
+    
+    function getLengthOfStakerBetIds(address staker) public view returns(uint256) {
+        return betIdsOfStaker[staker].length;
     }
     
     function setBetIDOnConstructor(
@@ -118,6 +133,14 @@ contract podStorage {
     
     function getWinnerDeclare(uint256 betId) public view returns(bool) {
         return betInfoMapping[betId].isWinnerDeclare;
+    }
+    
+    function setInterest(uint256 betId, uint256 interest) public {
+        betInfoMapping[betId].winningInterest = interest;
+    }
+    
+    function getInterest(uint256 betId) public view returns(uint256) {
+        return betInfoMapping[betId].winningInterest;
     }
     
     function setSingleWinnerAddress(uint256 betId, uint256 winnerIndex) public {
@@ -219,6 +242,14 @@ contract podStorage {
             betIdTokensMapping[betId].tokenAddress,
             betIdTokensMapping[betId].lendingToken
         ); 
+    }
+    
+    function setTotalWinning(address _staker, uint256 _winningAmount) public {
+        totalWinning[_staker] = totalWinning[_staker].add(_winningAmount);
+    }
+    
+    function getTotalWinning(address _staker) public view returns(uint256) {
+        return totalWinning[_staker];
     }
     
     function setRedeemFlagStakerOnBet(uint256 betId, address staker) public {

@@ -50,8 +50,8 @@ contract yieldpod {
         address _tokenAddress, address _lendingAddress, address _podManager, string memory _betName) 
         public 
     {
-        iPodStorageInterface = IPodStorageInterface(0x6096143b28c632490C8D9bA1e06dfaD9f0a90Cc6);
-        iNftInterface = INftInterface(0x991625bf9330B65345927bBBdf42b8E915c0fa03);
+        iPodStorageInterface = IPodStorageInterface(0x5fc61A9d612626332bf8f24a4DF751D24f98e210);
+        iNftInterface = INftInterface(0xfCEf30351C167e310Fc4ed65Ff2BD46bAA40C28C);
         regularToken = IERC20(_tokenAddress);
         lendingToken = IERC20(_lendingAddress);
         uint256 betId = now;
@@ -92,7 +92,7 @@ contract yieldpod {
         
         iPodStorageInterface.setNewStakerForBet(_betId, msg.sender);
         iPodStorageInterface.increaseStakerCount(_betId);
-        
+        iPodStorageInterface.addNewBetIdForStaker(_betId, msg.sender);
         iPodStorageInterface.setStakeforBet(_betId, amount, msg.sender);
         iPodStorageInterface.addAmountInTotalStake(_betId, amount);
         
@@ -123,7 +123,7 @@ contract yieldpod {
             cToken.redeem(getBalanceofLendingToken(address(this)));
         } else if(iPodStorageInterface.getYieldMechanism(_betId) == 2) {
             yDai.withdraw(getBalanceofLendingToken(address(this)));
-        }  
+        }
         if(iPodStorageInterface.isSingleOrMultipleWinner(_betId) == 0) {
             _singleWinner(_betId); // magic happens here
         } else if (iPodStorageInterface.isSingleOrMultipleWinner(_betId) == 1) {
@@ -168,12 +168,14 @@ contract yieldpod {
                 if(winnerIndex != i) {
                     regularToken.transfer(stakers[i], iPodStorageInterface.getStakeforBet(_betId, stakers[i]));
                 } else {
+                    iPodStorageInterface.setTotalWinning(stakers[i], interest);
                     iPodStorageInterface.mintInterestNft(_betId, interest, msg.sender);
                     regularToken.transfer(stakers[i], iPodStorageInterface.getStakeforBet(_betId, stakers[i]));
                 }
                 iPodStorageInterface.burnNft(_betId, stakers[i]);
             }
         }
+        iPodStorageInterface.setInterest(_betId, interest);
         emit singleWinnerDeclare(_betId, interest, winnerIndex);
     }
     

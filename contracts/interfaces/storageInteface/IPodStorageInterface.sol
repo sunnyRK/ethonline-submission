@@ -10,6 +10,10 @@ interface IPodStorageInterface {
     function addNewBetId(uint256 betId, address manager) external;
     function getBetIdArrayOfManager(address manager) external view returns(uint256[] memory);
     function getLengthOfBetIds(address manager) external view returns(uint256);
+    
+    function addNewBetIdForStaker(uint256 betId, address staker) external;
+    function getBetIdArrayOfStaker(address staker) external view returns(uint256[] memory);
+    function getLengthOfStakerBetIds(address staker) external view returns(uint256);
 
     function setBetIDOnConstructor(
         uint256 betId, 
@@ -23,13 +27,18 @@ interface IPodStorageInterface {
     
     function setWinnerDeclare(uint256 betId) external;
     function getWinnerDeclare(uint256 betId) external view returns(bool);
-
+    function setInterest(uint256 betId, uint256 interest) external;
+    function getInterest(uint256 betId) external view returns(uint256);
+    
     function setSingleWinnerAddress(uint256 betId, uint256 winnerIndex) external;
     function setMultipleWinnerAddress(uint256 betId, uint256[] calldata winnerIndexes) external;
+    function setWinnerNumbers(uint256 betId, uint256 winnigNumber) external;
     function isSingleOrMultipleWinner(uint256 betId) external view returns(uint256);
     function getSingleWinnerAddress(uint256 betId) external view returns(uint256);
     function getMultipleWinnerAddress(uint256 betId) external view returns(uint256[] memory);
-
+    function setTotalWinner(uint256 betId, uint256 totalWinner) external;
+    function getTotalWinner(uint256 betId) external view returns(uint256);
+    
     function setTimestamp(uint256 betId, uint256 timestamp) external;
     function getTimestamp(uint256 betId) external view returns(uint256);
 
@@ -50,8 +59,17 @@ interface IPodStorageInterface {
     
     function setBetTokens(uint256 betId, address _tokenAddress, address _aaveToken) external;
     function getBetTokens(uint256 betId) external view returns(address, address);
+    function setTotalWinning(address _staker, uint256 _winningAmount) external;
+    function getTotalWinning(address _staker) external view returns(uint256);
     
     function setRedeemFlagStakerOnBet(uint256 betId, address staker) external;
     function setRevertRedeemFlagStakerOnBet(uint256 betId, address staker) external;
     function getRedeemFlagStakerOnBet(uint256 betId, address staker) external view returns(bool);
+    
+    function mintNft(uint256 betId, uint256 price, address staker) external;
+    function mintInterestNft(uint256 betId, uint256 price, address staker) external;
+    function burnNft(uint256 betId, address staker) external;
+    function burnInterestNft(uint256 betId, address staker) external;
+    function getNftDetail(uint256 betId, address staker) external view returns(uint256, uint256, bool);
+    function getInterestNftDetail(uint256 betId, address staker) external view returns(uint256, uint256, bool);
 }

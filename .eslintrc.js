@@ -72,6 +72,7 @@ module.exports = {
 
     ],
     'react/react-in-jsx-scope': 'off',
+    'react/state-in-constructor': 'off',
   },
 
   parser: 'babel-eslint',

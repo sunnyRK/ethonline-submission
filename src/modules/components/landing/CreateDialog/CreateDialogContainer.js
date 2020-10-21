@@ -6,27 +6,30 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
 import CreateDialog from './CreateDialog';
-
-import web3 from "../../../../../config/web3";
-import { 
-  getPodFactoryContract,
-  getPodStorageContract
-} from "../../../../../config/instances/contractinstances";
+import web3 from '../../../../../config/web3';
+import { getPodFactoryContract, getPodStorageContract, TokenInfoArray } from '../../../../../config/instances/contractinstances';
+import { AAVE, COMPOUND, YEARN } from '../../../shared/Types';
 
 class CreateDialogContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      lendingChoice: '',
       podName: '',
       joinAmt: '',
       totalDays: '',
-      numStakers: ''
+      totalWinner: 1,
     };
   }
 
   onCreateClick = async (event) => {
+    const {
+      lendingChoice, joinAmt, totalDays,
+      podName, totalWinner,
+    } = this.state;
+    const { handleState } = this.props;
     event.preventDefault();
-    this.props.handleState({ isCreateDialogOpen: false });
+    handleState({ isCreateDialogOpen: false });
     const accounts = await web3.eth.getAccounts();
 
     const podContract = await getPodStorageContract(web3);
@@ -36,44 +39,42 @@ class CreateDialogContainer extends Component {
     let isWinnerDeclareofCurrent = false;
     let winnerAddress;
 
-    if(betIds.length <= 0) {
+    if (betIds.length <= 0) {
       isWinnerDeclareofLast = true;
       isWinnerDeclareofCurrent = true;
-    } else if(betIds.length == 1) {
-      // isWinnerDeclareofLast = await podContract.methods.getWinnerDeclare(betIds[betIds.length-1]).call();
+    } else if (betIds.length === 1) {
       isWinnerDeclareofLast = true;
-      winnerAddress = await podContract.methods.getWinnerAddress(betIds[betIds.length-1]).call();
-      if(winnerAddress != "0x0000000000000000000000000000000000000000") {
+      winnerAddress = await podContract.methods.getWinnerAddress(betIds[betIds.length - 1]).call();
+      if (winnerAddress !== '0x0000000000000000000000000000000000000000') {
         isWinnerDeclareofCurrent = true;
       }
     } else {
-      isWinnerDeclareofLast = await podContract.methods.getWinnerDeclare(betIds[betIds.length-2]).call();
-      winnerAddress = await podContract.methods.getWinnerAddress(betIds[betIds.length-1]).call();
-      console.log("id: ",betIds[betIds.length-1])
-      console.log("id2: ", betIds[betIds.length-2])
-      if(winnerAddress != "0x0000000000000000000000000000000000000000") {
+      isWinnerDeclareofLast = await podContract.methods.getWinnerDeclare(betIds[betIds.length - 2]).call();
+      winnerAddress = await podContract.methods.getWinnerAddress(betIds[betIds.length - 1]).call();
+      if (winnerAddress !== '0x0000000000000000000000000000000000000000') {
         isWinnerDeclareofCurrent = true;
       }
     }
 
-    console.log(isWinnerDeclareofLast)
-    console.log(isWinnerDeclareofCurrent)
-
-    if(isWinnerDeclareofLast && isWinnerDeclareofCurrent) {
+    if (isWinnerDeclareofLast && isWinnerDeclareofCurrent) {
+      const isAave = lendingChoice === AAVE;
+      const isCompound = lendingChoice === COMPOUND;
       const podFactoryContract = await getPodFactoryContract(web3);
       await podFactoryContract.methods.createPod(
-        web3.utils.toWei(this.state.joinAmt.toString(), "ether"),
-        this.state.numStakers,
-        this.state.totalDays,
-        // (parseInt(this.state.totalDays)*1440),
-        "0xFf795577d9AC8bD7D90Ee22b6C1703490b6512FD",
-        "0x58ad4cb396411b691a9aab6f74545b2c5217fe6a",
-        this.state.podName
+        isAave ? 0 : isCompound && 1,
+        web3.utils.toWei(joinAmt.toString(), 'ether'),
+        Number(totalDays),
+        totalWinner,
+        isAave ? TokenInfoArray.AAVEDAI.token_contract_address
+          : isCompound && TokenInfoArray.COMPOUNDDAI.token_contract_address,
+        isAave ? TokenInfoArray.AAVEDAI.sub_token_address
+          : isCompound && TokenInfoArray.COMPOUNDDAI.sub_token_address,
+        podName,
       ).send({
-        from: accounts[0]
+        from: accounts[0],
       });
     } else {
-      alert("Please wait for disburse old pod!");
+      alert('Please wait for disburse old pod!');
     }
   }
 
@@ -84,27 +85,30 @@ class CreateDialogContainer extends Component {
   }
 
   render() {
+    const {
+      openDialog, handleState, podName, joinAmt,
+      totalDays,
+    } = this.props;
     return (
       <Dialog
         className="custom-dialog custom-content-style join-dialog"
-        open={this.props.openDialog}
+        open={openDialog}
       >
         <DialogTitle className="dialog-title">
           Create Pod
           <IconButton
-            onClick={() => { this.props.handleState({ isCreateDialogOpen: false }); }}
+            onClick={() => { handleState({ isCreateDialogOpen: false }); }}
           >
             <CloseIcon />
           </IconButton>
         </DialogTitle>
         <DialogContent className="dialog-content join-dialog">
-          <CreateDialog 
+          <CreateDialog
             handleState={this.handleState}
-            onCreateClick={this.onCreateClick} 
-            podName={this.state.podName}
-            joinAmt={this.state.joinAmt}
-            totalDays={this.state.totalDays}
-            numStakers={this.state.numStakers}
+            onCreateClick={this.onCreateClick}
+            podName={podName}
+            joinAmt={joinAmt}
+            totalDays={totalDays}
           />
         </DialogContent>
       </Dialog>

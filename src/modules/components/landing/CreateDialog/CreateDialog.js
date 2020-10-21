@@ -1,4 +1,3 @@
-import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
@@ -6,21 +5,23 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import { Button } from '@material-ui/core';
 
+import { AAVE, COMPOUND, YEARN } from '../../../shared/Types';
+
 const options = [
   {
-    key: 'compound',
-    text: 'Compound',
-    value: 'compound',
-  },
-  {
-    key: 'aave',
+    key: AAVE,
     text: 'Aave',
-    value: 'aave',
+    value: AAVE,
   },
   {
-    key: 'yearn',
+    key: COMPOUND,
+    text: 'Compound',
+    value: COMPOUND,
+  },
+  {
+    key: YEARN,
     text: 'Yearn',
-    value: 'yearn',
+    value: YEARN,
   },
 ];
 
@@ -42,7 +43,10 @@ const totalWinnerOptions = [
   },
 ];
 
-const CreateDialog = ({ handleState, onCreateClick, podName, joinAmt, totalDays, numStakers }) => (
+const CreateDialog = ({
+  handleState, onCreateClick, podName, joinAmt,
+  totalDays,
+}) => (
   <form onSubmit={onCreateClick} className="join-dialog-content">
     <div className="form-field">
       <FormControl fullWidth variant="outlined" classes={{ root: 'token-price-dropdown' }}>
@@ -100,25 +104,13 @@ const CreateDialog = ({ handleState, onCreateClick, podName, joinAmt, totalDays,
     </div>
     <div className="form-field">
       <TextField
-        label="Total Days"
+        label="Total Days (In Minutes)"
         variant="outlined"
         fullWidth
         required
         value={totalDays}
         onChange={(event) => {
           handleState({ totalDays: event.target.value });
-        }}
-      />
-    </div>
-    <div className="form-field">
-      <TextField
-        label="Num of Stakers can participant"
-        variant="outlined"
-        fullWidth
-        required
-        value={numStakers}
-        onChange={(event) => {
-          handleState({ numStakers: event.target.value });
         }}
       />
     </div>

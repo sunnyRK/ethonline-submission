@@ -2,15 +2,11 @@ import React, { Component } from 'react';
 
 import MainTemplate from '../../shared/main-template/MainTemplateContainer';
 import Landing from './Landing';
-import web3 from "../../../../config/web3";
-import { 
-  getPodFactoryContract,
-  getAaavePodContract,
-  getPodStorageContract
-} from "../../../../config/instances/contractinstances";
+import web3 from '../../../../config/web3';
+import { getPodFactoryContract, getYieldPodContract, getPodStorageContract } from '../../../../config/instances/contractinstances';
 
 class LandingContainer extends Component {
-  state = { // eslint-disable-line
+  state = {
     isJoinDialogOpen: false,
     isRedeemDialogOpen: false,
     isDisburseDialogOpen: false,
@@ -45,7 +41,9 @@ class LandingContainer extends Component {
       window.ethereum.on('accountsChanged', accounts => {
         window.location.reload(true);
       });
+      console.log('entered====');
       const accounts = await web3.eth.getAccounts();
+      console.log('accounts.length=====', accounts.length);
       if (accounts.length > 0 && accounts[0] === '0x55E73A69B2315A6e7192af118705079Eb1dB2184') {
         this.handleState({ isAdmin: true });
       }
@@ -56,83 +54,79 @@ class LandingContainer extends Component {
       const podName = await podContract.methods.getPodName(runningPodbetId).call();
       const timeStamp = await podContract.methods.getTimestamp(runningPodbetId).call();
 
-      console.log(runningPodbetId)
-      console.log("time: ",timeStamp)
-
-      const numOfStakers = await podContract.methods.getNumOfStakers(runningPodbetId).call();
+      // const numOfStakers = await podContract.methods.getNumOfStakers(runningPodbetId).call();
       const stakerCount = await podContract.methods.getStakeCount(runningPodbetId).call();
-      let totalWinning = await podContract.methods.getTotalWinning(accounts[0]).call();
-      totalWinning = web3.utils.fromWei(totalWinning.toString(), "ether");
+      // let totalWinning = await podContract.methods.getTotalWinning(accounts[0]).call();
+      // totalWinning = web3.utils.fromWei(totalWinning.toString(), 'ether');
       // const betIdManager = await podContract.methods.getBetIdManager(runningPodbetId).call();
 
       const getPods = await podFactoryContract.methods.getPods().call();
-      const aavePodContract = await getAaavePodContract(web3, getPods[getPods.length-1]);
+      console.log('getPods=====', getPods);
+      const yieldPodContract = await getYieldPodContract(web3, getPods[getPods.length - 1]);
 
       // console.log(getPods[getPods.length-1]);
-      const balanceWithInterest = await aavePodContract.methods.getBalanceofAaveToken(getPods[getPods.length-1]).call();
+      const balanceWithInterest = await yieldPodContract.methods.getBalanceofLendingToken(getPods[getPods.length - 1]).call();
       let totalStakeOnBet = await podContract.methods.getTotalStakeFromBet(runningPodbetId).call();
 
       const interest = balanceWithInterest - totalStakeOnBet;
-      const interestGenerate = web3.utils.fromWei(interest.toString(), "ether");
+      const interestGenerate = web3.utils.fromWei(interest.toString(), 'ether');
       // console.log(interestGenerate);
 
       const minimumContribution = await podContract.methods.getMinimumContribution(runningPodbetId).call();
 
       const investment = await podContract.methods.getStakeforBet(runningPodbetId, accounts[0]).call();
-      const yourInvestment = web3.utils.fromWei(investment.toString(), "ether");
+      const yourInvestment = web3.utils.fromWei(investment.toString(), 'ether');
       // console.log(minimumContribution);
 
-      totalStakeOnBet = web3.utils.fromWei(totalStakeOnBet.toString(), "ether");
+      totalStakeOnBet = web3.utils.fromWei(totalStakeOnBet.toString(), 'ether');
 
-      const betIds = await podContract.methods.getBetIdArrayOfManager("0x48845392F5a7c6b360A733e0ABE2EdcC74f1F4d6").call();
-
-      if(getPods.length > 1) {
-        const lastPodName = await podContract.methods.getPodName(betIds[betIds.length-2]).call();
-        const lastWinnerAddress = await podContract.methods.getWinnerAddress(betIds[betIds.length-2]).call();
-        const lastWinnerDeclare = await podContract.methods.getWinnerDeclare(betIds[betIds.length-2]).call();
+      const betIds = await podContract.methods.getBetIdArrayOfManager(accounts[0]).call();
+      console.log('betIds=====', betIds);
+      if (getPods.length > 1 && betIds.length > 1) {
+        const lastPodName = await podContract.methods.getPodName(betIds[betIds.length - 2]).call();
+        const lastWinnerAddress = await podContract.methods.getSingleWinnerAddress(betIds[betIds.length - 2]).call();
+        const lastWinnerDeclare = await podContract.methods.getWinnerDeclare(betIds[betIds.length - 2]).call();
         let lastPrizeAmt;
-        if(lastWinnerDeclare) {
-          lastPrizeAmt = await podContract.methods.getInterest(betIds[betIds.length-2]).call();
-          lastPrizeAmt = web3.utils.fromWei(lastPrizeAmt.toString(), "ether");  //lastInterestGenerate 
-        } else {  
-          const lastBalanceWithInterest = await aavePodContract.methods.getBalanceofAaveToken(getPods[getPods.length-2]).call();
-          let lastTotalStakeOnBet = await podContract.methods.getTotalStakeFromBet(betIds[betIds.length-2]).call();
+        if (lastWinnerDeclare) {
+          lastPrizeAmt = await podContract.methods.getInterest(betIds[betIds.length - 2]).call();
+          lastPrizeAmt = web3.utils.fromWei(lastPrizeAmt.toString(), 'ether'); // lastInterestGenerate
+        } else {
+          const lastBalanceWithInterest = await yieldPodContract.methods.getBalanceofLendingToken(getPods[getPods.length - 2]).call();
+          const lastTotalStakeOnBet = await podContract.methods.getTotalStakeFromBet(betIds[betIds.length - 2]).call();
           const lastInterest = lastBalanceWithInterest - lastTotalStakeOnBet;
-          lastPrizeAmt = web3.utils.fromWei(lastInterest.toString(), "ether");  //lastInterestGenerate 
+          lastPrizeAmt = web3.utils.fromWei(lastInterest.toString(), 'ether'); // lastInterestGenerate
         }
-
-        lastWinnerDeclare
 
         this.setState({
           lastPodName,
           lastPrizeAmt,
           lastWinnerAddress,
-          lastWinnerDeclare
+          lastWinnerDeclare,
         });
       }
 
-      const mul = stakerCount * 100;
-      const progress = mul/numOfStakers;
+      // const mul = stakerCount * 100;
+      // const progress = mul / numOfStakers;
 
-      console.log(progress)
+      // console.log(progress)
 
       this.setState({
         podName,
-        numOfStakers,
-        interestGenerate, 
-        minimumContribution, 
+        // numOfStakers,
+        interestGenerate,
+        minimumContribution,
         yourInvestment,
         totalStakeOnBet,
         stakerCount,
-        progress,
+        // progress,
         timeStamp,
-        totalWinning
+        // totalWinning,
       }, () => {
         this.countDownTimer();
         setInterval(() => { this.generateInterest(); }, 10000);
       });
     } catch (error) {
-      console.log(error);
+      console.log('error====', error);
     }
   }
 
@@ -140,9 +134,9 @@ class LandingContainer extends Component {
     const podFactoryContract = await getPodFactoryContract(web3);
     const getPods = await podFactoryContract.methods.getPods().call();
     const podContract = await getPodStorageContract(web3);
-    const aavePodContract = await getAaavePodContract(web3, getPods[getPods.length - 1]);
+    const yieldPodContract = await getYieldPodContract(web3, getPods[getPods.length - 1]);
     const runningPodbetId = await podContract.methods.getRunningPodBetId().call();
-    const balanceWithInterest = await aavePodContract.methods.getBalanceofAaveToken(getPods[getPods.length - 1]).call();
+    const balanceWithInterest = await yieldPodContract.methods.getBalanceofLendingToken(getPods[getPods.length - 1]).call();
     const totalStakeOnBet = await podContract.methods.getTotalStakeFromBet(runningPodbetId).call();
 
     const interest = balanceWithInterest - totalStakeOnBet;

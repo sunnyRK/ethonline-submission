@@ -10,7 +10,7 @@ import RedeemDialog from './ReedemDialog';
 import web3 from "../../../../../config/web3";
 import { 
   getPodFactoryContract,
-  getAaavePodContract,
+  getYieldPodContract,
   getERCContractInstance,
   getPodStorageContract
 } from "../../../../../config/instances/contractinstances";
@@ -29,9 +29,9 @@ class RedeemDialogContainer extends Component {
 
     const podFactoryContract = await getPodFactoryContract(web3);
     const getPods = await podFactoryContract.methods.getPods().call();
-    const aavePodContract = await getAaavePodContract(web3, getPods[getPods.length-1]);
+    const yieldPodContract = await getYieldPodContract(web3, getPods[getPods.length-1]);
 
-    await aavePodContract.methods.redeemFromBetBeforeFinish(runningPodbetId).send({
+    await yieldPodContract.methods.redeemFromBetBeforeFinish(runningPodbetId).send({
       from: accounts[0]
     })
   }

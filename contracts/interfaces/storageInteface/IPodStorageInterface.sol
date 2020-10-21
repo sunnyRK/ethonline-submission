@@ -70,6 +70,7 @@ interface IPodStorageInterface {
     function mintInterestNft(uint256 betId, uint256 price, address staker) external;
     function burnNft(uint256 betId, address staker) external;
     function burnInterestNft(uint256 betId, address staker) external;
+
     function getNftDetail(uint256 betId, address staker) external view returns(uint256, uint256, bool);
     function getInterestNftDetail(uint256 betId, address staker) external view returns(uint256, uint256, bool);
 }

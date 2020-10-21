@@ -12,9 +12,9 @@ import DisburseDialog from './DisburseDilog/DisburseDialogContainer';
 
 const Landing = ({
   isJoinDialogOpen, handleState, isRedeemDialogOpen, progress, totalWinning, lastWinnerDeclare,
-  isCreateDialogOpen, isDisburseDialogOpen, isAdmin, podName, numOfStakers, stakerCount, interestGenerate, minimumContribution, 
-  yourInvestment, totalStakeOnBet, lastPodName, lastPrizeAmt, lastWinnerAddress,
-  days, hours, seconds, minutes, landingLoading,
+  isCreateDialogOpen, isDisburseDialogOpen, isAdmin, podName, numOfStakers, stakerCount,
+  interestGenerate, minimumContribution, yourInvestment, totalStakeOnBet, lastPodName,
+  lastPrizeAmt, lastWinnerAddress, days, hours, seconds, minutes, landingLoading,
 }) => {
   const podInfo = [
     {
@@ -27,7 +27,7 @@ const Landing = ({
     },
     {
       header: 'Joining Amount',
-      value: parseInt(minimumContribution)/1e18,
+      value: Number(minimumContribution) / 1e18,
     },
   ];
 

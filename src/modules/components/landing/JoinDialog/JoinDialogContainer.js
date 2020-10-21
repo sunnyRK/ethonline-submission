@@ -10,7 +10,7 @@ import JoinDialog from './JoinDialog';
 import web3 from "../../../../../config/web3";
 import { 
   getPodFactoryContract,
-  getAaavePodContract,
+  getYieldPodContract,
   getERCContractInstance,
   getPodStorageContract
 } from "../../../../../config/instances/contractinstances";
@@ -70,8 +70,8 @@ class JoinDialogContainer extends Component {
 
     const podFactoryContract = await getPodFactoryContract(web3);
     const getPods = await podFactoryContract.methods.getPods().call();
-    const aavePodContract = await getAaavePodContract(web3, getPods[getPods.length-1]);
-    const regularToken = await aavePodContract.methods.regularToken().call();
+    const yieldPodContract = await getYieldPodContract(web3, getPods[getPods.length-1]);
+    const regularToken = await yieldPodContract.methods.regularToken().call();
     const ercContract = getERCContractInstance(web3, regularToken);
 
     const allowance = await ercContract.methods.allowance(accounts[0], getPods[getPods.length-1]).call();
@@ -82,7 +82,7 @@ class JoinDialogContainer extends Component {
       })
     // } 
 
-    await aavePodContract.methods.addStakeOnBet(runningPodbetId, minimumContribution).send({
+    await yieldPodContract.methods.addStakeOnBet(runningPodbetId, minimumContribution).send({
       from: accounts[0]
     })
   };

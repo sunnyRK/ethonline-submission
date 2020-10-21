@@ -10,7 +10,7 @@ import DisburseDialog from './DisburseDialog';
 import web3 from "../../../../../config/web3";
 import { 
   getPodFactoryContract,
-  getAaavePodContract,
+  getYieldPodContract,
   getPodStorageContract
 } from "../../../../../config/instances/contractinstances";
 
@@ -27,7 +27,7 @@ class DisburseDialogContainer extends Component {
 
     const podFactoryContract = await getPodFactoryContract(web3);
     const getPods = await podFactoryContract.methods.getPods().call();
-    const aavePodContract = await getAaavePodContract(web3, getPods[getPods.length-2]);
+    const yieldPodContract = await getYieldPodContract(web3, getPods[getPods.length-2]);
 
     const podContract = await getPodStorageContract(web3);
     const betIds = await podContract.methods.getBetIdArrayOfManager(accounts[0]).call();
@@ -41,7 +41,7 @@ class DisburseDialogContainer extends Component {
       isWinnerDeclare = await podContract.methods.getWinnerDeclare(betIds[betIds.length-1]).call();
       winnerAddress = await podContract.methods.getWinnerAddress(betIds[betIds.length-1]).call();
       if(winnerAddress != "0x0000000000000000000000000000000000000000" && !isWinnerDeclare){
-        await aavePodContract.methods.disburseAmount(
+        await yieldPodContract.methods.disburseAmount(
           betIds[betIds.length-1]
         ).send({
           from: accounts[0]
@@ -53,7 +53,7 @@ class DisburseDialogContainer extends Component {
       isWinnerDeclare = await podContract.methods.getWinnerDeclare(betIds[betIds.length-2]).call();
       winnerAddress = await podContract.methods.getWinnerAddress(betIds[betIds.length-2]).call();
       if(winnerAddress != "0x0000000000000000000000000000000000000000" && !isWinnerDeclare){
-        await aavePodContract.methods.disburseAmount(
+        await yieldPodContract.methods.disburseAmount(
           betIds[betIds.length-2]
         ).send({
           from: accounts[0]
@@ -64,7 +64,7 @@ class DisburseDialogContainer extends Component {
     }
 
     // if(shouldDisburse && !isWinnerDeclare) {
-    //   await aavePodContract.methods.disburseAmount(
+    //   await yieldPodContract.methods.disburseAmount(
     //     betIds[betIds.length-2]
     //   ).send({
     //     from: accounts[0]

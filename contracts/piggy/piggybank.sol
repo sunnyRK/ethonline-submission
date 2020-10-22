@@ -63,7 +63,7 @@ contract piggybank is Ownable {
     ) public {
         piggyToken = _piggyToken;
         devAddress = _devAddress;
-        iPodStorageInterface = IPodStorageInterface(0xB9F97358877022a8e02661469f8eC9832d408FF3);
+        iPodStorageInterface = IPodStorageInterface(0x92FcfD8948D09B8be5852e88aAb53E99A414a192);
     }
     
     function piggyPoolLength() external view returns (uint256) {
@@ -115,7 +115,13 @@ contract piggybank is Ownable {
         user.amount = user.amount.sub(_amount);
         user.rewardDebt = user.amount.mul(pool.accNftPerShare).div(1e12);
         pool.totalPoolBalance = pool.totalPoolBalance.sub(_amount);
-        iPodStorageInterface.burnNft(betId, staker);
+        
+        if(iPodStorageInterface.isInterestNFT(tokenId)){
+            iPodStorageInterface.burnInterestNft(betId, staker);
+        } else {
+            iPodStorageInterface.burnNft(betId, staker);
+        }
+        
         (address regularToken, address lendingToken) = iPodStorageInterface.getBetTokens(betId); 
         
         if (iPodStorageInterface.getYieldMechanism(betId) == 0) {
@@ -146,7 +152,12 @@ contract piggybank is Ownable {
         pool.totalPoolBalance = pool.totalPoolBalance.sub(_amount);
         for (uint i=0; i< tokenIDs.length; i++) {
             betId = iPodStorageInterface.getBetIDForNFT(tokenIDs[i]);
-            iPodStorageInterface.burnNft(betId, staker);
+            
+            if(iPodStorageInterface.isInterestNFT(tokenIDs[i])){
+                iPodStorageInterface.burnInterestNft(betId, staker);
+            } else {
+                iPodStorageInterface.burnNft(betId, staker);
+            }
             
             (address regularToken, address lendingToken) = iPodStorageInterface.getBetTokens(betId); 
         

@@ -1,4 +1,4 @@
-# InstCryp(NFT-Marketplace)  
+# InstCryp(Automated-NFT-Marketplace)  
 
 ```
 InstCryp creates a NFT MarketPlace using different legos of defi blockchian. like,
@@ -8,6 +8,11 @@ InstCryp creates a NFT MarketPlace using different legos of defi blockchian. lik
 3). Chainlink Alarm clock and VRF to support defi automation and randomness on NFT.  
 4). NFT yield-farming like sushiswap.   
 ```
+## Video Demo
+
+https://youtu.be/LKC2qWUtutI  
+[![AAVE+Compound+Yearn+Chainlink](Screenshots/piggybank.png)](https://youtu.be/LKC2qWUtutI "InstCryp")
+
 ### How can we Participate in InstCryp?  
 
     1). Automatic InstCryp-POD
@@ -52,6 +57,40 @@ To change in protocol we will use compound-governance smart contract which is us
 3). npm install  
 4). node server.js  
 5). Currently deployed on Kovan Network
+
+### ScreenShots with guidelines
+
+
+#### 1. Create POD by contract owner 
+![createpod](Screenshots/s1.png)  
+
+
+#### 2. Join Pod by users with Stablecoin and user will get stablelcoin backed NFTs
+![createpod](Screenshots/s2.png)
+
+
+#### 3. Joining pod with metamask 
+![createpod](Screenshots/s3.png)
+
+
+#### 4. You can see live interest generating from lending protocol and timer is running
+![createpod](Screenshots/s4.png)
+
+
+#### 5. Aftre depositing stablecoin user will get stablecoin backed NFTs.
+![createpod](Screenshots/s5.png)
+
+#### 6. You can see left side last pod is finised and amount is disbursed to winner address with interest NFT.
+![createpod](Screenshots/s6.png)
+
+#### 7. You can see Interest NFT as a winner prize to winner.
+![createpod](Screenshots/s7.png)
+
+#### 8. After pod finished smart contract automatically transfer NFTs and funds to PiggyBank contract which is yield farming like sudhiswap and generate piggyt-token NFTs at every block.
+
+`Even if someone doesn't win the prize pool, they could collect the participation NFTs and then when they amass a certain number (say 10), they could earn piggy token backed NFTs on the platform.` 
+
+![createpod](Screenshots/s8.png)
 
 ### Tech Stack
 1). Compound  

@@ -50,9 +50,9 @@ contract yieldpod {
         address _tokenAddress, address _lendingAddress, address _podManager, string memory _betName) 
         public 
     {
-        iPodStorageInterface = IPodStorageInterface(0xB9F97358877022a8e02661469f8eC9832d408FF3);
-        iNftInterface = INftInterface(0x5b9baea74964883F47f66240f6050bc0656ffC50);
-        iPiggyInterface = IPiggyInterface(0x708bdab2170AdDb879c85CF6DBC94f7E45ec0fb5);
+        iPodStorageInterface = IPodStorageInterface(0x92FcfD8948D09B8be5852e88aAb53E99A414a192);
+        iNftInterface = INftInterface(0x541c16dC466e74E4095eCb70b7f6Fe3D05368799);
+        iPiggyInterface = IPiggyInterface(0xFdd24E264b7E992409DA70945840601682e039e8);
         regularToken = IERC20(_tokenAddress);
         lendingToken = IERC20(_lendingAddress);
         uint256 betId = now;
@@ -83,7 +83,7 @@ contract yieldpod {
             yDai = IYDAI(_lendingAddress);  // Mainnet: 0xACd43E627e64355f1861cEC6d3a6688B31a6F952 
         }
         
-        iChainlinkAlarm = IchainlinkAlarm(0x55d3509F3309Ca83624cd20fC27b26D93Ba288d1);
+        iChainlinkAlarm = IchainlinkAlarm(0xdCBa3878247e417422F8F2a285De662b742845D0);
         iChainlinkAlarm.delayStart(0x2f90A6D021db21e1B2A077c5a37B3C7E75D15b7e, "a7ab70d561d34eb49e9b1612fd2e044b", timeStamp);
     }
     

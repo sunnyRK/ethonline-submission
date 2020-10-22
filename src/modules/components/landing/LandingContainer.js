@@ -67,7 +67,7 @@ class LandingContainer extends Component {
 
       const interest = balanceWithInterest - totalStakeOnBet;
       const interestGenerate = web3.utils.fromWei(interest.toString(), 'ether');
-
+      
       const minimumContribution = await podContract.methods.getMinimumContribution(runningPodbetId).call();
 
       const investment = await podContract.methods.getStakeforBet(runningPodbetId, accounts[0]).call();
@@ -101,6 +101,10 @@ class LandingContainer extends Component {
           totalParticipants,
           landingLoading: false,
         });
+      } else {
+        this.setState({
+          landingLoading: false,
+        });
       }
 
       this.setState({
@@ -111,12 +115,16 @@ class LandingContainer extends Component {
         totalStakeOnBet,
         timeStamp,
         totalWinning,
+        landingLoading: false,
       }, () => {
         this.countDownTimer();
         setInterval(() => { this.generateInterest(); }, 10000);
       });
     } catch (error) {
       console.log('error====', error);
+      this.setState({
+        landingLoading: false,
+      });
     }
   }
 

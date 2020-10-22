@@ -56,7 +56,7 @@ class CreateDialogContainer extends Component {
       }
     }
 
-    if (isWinnerDeclareofLast && isWinnerDeclareofCurrent) {
+    // if (isWinnerDeclareofLast && isWinnerDeclareofCurrent) {
       const isAave = lendingChoice === AAVE;
       const isCompound = lendingChoice === COMPOUND;
       const podFactoryContract = await getPodFactoryContract(web3);
@@ -73,9 +73,9 @@ class CreateDialogContainer extends Component {
       ).send({
         from: accounts[0],
       });
-    } else {
-      alert('Please wait for disburse old pod!');
-    }
+    // } else {
+    //   alert('Please wait for disburse old pod!');
+    // }
   }
 
   handleState = (value, callback) => {

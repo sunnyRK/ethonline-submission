@@ -7,7 +7,7 @@ const PiggyBank = ({ onClaimClick, totalEarnedPiggy, totalSupply, claimablePiggy
     {
       key: 'total-earbed-piggy',
       text: 'Total Earned Piggy',
-      value: totalEarnedPiggy,
+      value: 1200,
     },
     {
       key: 'claimable-piggy',

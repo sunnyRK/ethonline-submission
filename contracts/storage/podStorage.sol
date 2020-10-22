@@ -43,6 +43,7 @@ contract podStorage {
     
     mapping(uint256 => mapping(address => nftDetails)) public nftDetailsMapping;
     mapping(uint256 => mapping(address => interestNftDetails)) public interestNftDetailsMapping;
+    mapping(uint256 => bool) public isInterestNft;
     mapping(uint256 => uint256) public nftTobetIdMapping; // nftTokenid => to betid mapping
     mapping(uint256 => betInfo) public betInfoMapping;
     mapping(uint256 => betTokens) public betIdTokensMapping;
@@ -61,7 +62,7 @@ contract podStorage {
     INftInterface iNftInterface;
     
     constructor() public {
-        iNftInterface = INftInterface(0x5b9baea74964883F47f66240f6050bc0656ffC50);
+        iNftInterface = INftInterface(0x541c16dC466e74E4095eCb70b7f6Fe3D05368799);
     }
     
     function setBetIDManager(uint256 betId, address manager) public {
@@ -283,6 +284,7 @@ contract podStorage {
         iNftInterface._safeMints(staker, tokenId);
         inftDetails.tokenId = tokenId;
         inftDetails.price = price;
+        isInterestNft[tokenId] = true;
         nftTobetIdMapping[tokenId] = betId;
     }
     
@@ -314,6 +316,10 @@ contract podStorage {
             interestNftDetailsMapping[betId][staker].price,
             interestNftDetailsMapping[betId][staker].isDead
         );
+    }
+    
+    function isInterestNFT(uint256 tokenId) public view returns(bool) {
+        return isInterestNft[tokenId];
     }
     
     function getBetIDForNFT(uint256 tokenId) public view returns(uint256) {

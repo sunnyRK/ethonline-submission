@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
-import ProgressBar from 'react-bootstrap/ProgressBar';
+// import ProgressBar from 'react-bootstrap/ProgressBar';
 import BlockUI from 'react-block-ui';
 
 import DaiIcon from '../../../assets/icons/dai.svg';
@@ -11,23 +11,27 @@ import CreateDialog from './CreateDialog/CreateDialogContainer';
 import DisburseDialog from './DisburseDilog/DisburseDialogContainer';
 
 const Landing = ({
-  isJoinDialogOpen, handleState, isRedeemDialogOpen, progress, totalWinning, lastWinnerDeclare,
-  isCreateDialogOpen, isDisburseDialogOpen, isAdmin, podName, numOfStakers, stakerCount,
-  interestGenerate, minimumContribution, yourInvestment, totalStakeOnBet, lastPodName,
-  lastPrizeAmt, lastWinnerAddress, days, hours, seconds, minutes, landingLoading,
+  isJoinDialogOpen, handleState, isRedeemDialogOpen, totalWinning, lastWinnerDeclare,
+  isCreateDialogOpen, isDisburseDialogOpen, isAdmin, podName, interestGenerate,
+  yourInvestment, totalStakeOnBet, lastPodName, lastPrizeAmt, lastWinnerAddress,
+  days, hours, seconds, minutes, landingLoading, minimumContribution, totalParticipants,
 }) => {
   const podInfo = [
     {
       header: 'Total Contract Balances',
-      value: totalStakeOnBet,
+      value: `$${totalStakeOnBet}`,
     },
     {
       header: 'Your Investment',
-      value: yourInvestment,
+      value: `$${yourInvestment}`,
     },
     {
       header: 'Joining Amount',
-      value: Number(minimumContribution) / 1e18,
+      value: `$${Number(minimumContribution) / 1e18}`,
+    },
+    {
+      header: 'Total Participants',
+      value: totalParticipants,
     },
   ];
 
@@ -74,12 +78,12 @@ const Landing = ({
           handleState={handleState}
         />
         <div className="pod">
-          <h3 className="pod-name">{podName}</h3>
           <div className="join-pod">
-            <div className="pod-progressbar">
+            <h3 className="pod-name">{podName}</h3>
+            {/* <div className="pod-progressbar">
               <ProgressBar now={progress} />
               <div className="total-investor">{stakerCount}/{numOfStakers}</div>
-            </div>
+            </div> */}
             <div className="button-wrapper">
               <Button
                 className="button-content join-pod-button"
@@ -105,7 +109,8 @@ const Landing = ({
                 <div className="estimated-header">Estimated Prize</div>
                 <h1 className="estimated-value">
                   <img src={DaiIcon} className="coin-icon" alt="coin" />
-                  &nbsp;{interestGenerate}
+                  &nbsp;
+                  {interestGenerate}
                 </h1>
               </div>
             </div>
@@ -114,7 +119,7 @@ const Landing = ({
                 podInfo.map((pod) => (
                   <div className="total-contract-balance stats-info">
                     <div className="stats-header">{pod.header}</div>
-                    <h2 className="stats-value">{`$${pod.value}`}</h2>
+                    <h2 className="stats-value">{pod.value}</h2>
                   </div>
                 ))
               }
@@ -148,10 +153,10 @@ const Landing = ({
             )
           }
           {
-            !isAdmin && (
+            isAdmin && (
               <div className="total-winning">
                 <h4 className="header">Your Total Winning</h4>
-                <h4 className="value">{totalWinning}</h4>
+                <h4 className="value">{`$${totalWinning}`}</h4>
               </div>
             )
           }

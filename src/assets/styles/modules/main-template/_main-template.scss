@@ -30,10 +30,14 @@ $footer-height: 180px;
       .menu-items {
         margin-right: 16px;
         padding: 10px 32px;
-        &.active {
+        &:hover {
           background-color: $secondary-app-color;
           border-radius: 25px;
         }
+        // &.active {
+        //   background-color: $secondary-app-color;
+        //   border-radius: 25px;
+        // }
         cursor: pointer;
       }
     }
@@ -42,54 +46,6 @@ $footer-height: 180px;
     min-height: calc(100% - (#{$header-height}));
     background-color: $secondary-app-color-100;
     display: flex;
-    .nfts-container {
-      display: flex;
-      flex-direction: column;
-      flex: 2;
-      .interest-nfts, .participant-nfts {
-        flex: 1;
-      }
-      .interest-nfts-container, .participant-nfts-container {
-        padding: 20px;
-        .heading {
-          color: #a9e3ff;
-        }
-        .interest-nfts, .participant-nfts {
-          padding: 20px;
-          display: flex;
-          flex-wrap: wrap;
-          .nft-container {
-            margin: 0 20px 0 0;
-            .nft {
-              width: 200px;
-              background: $secondary-app-color;
-              height: 250px;
-              border-radius: 10px;
-            }
-            .nft-info {
-              display: flex;
-              .pod-name, .price {
-                flex: 1;
-                display: flex;
-                justify-content: center;
-                margin-top: 10px;
-                border-radius: 5px;
-              }
-              .pod-name {
-                margin-right: 5px;
-                border: #00f5e5  1px solid;
-                color: #00f5e5  ;
-              }
-              .price {
-                margin-left: 5px;
-                border: #41CD7D 1px solid;
-                color: #41CD7D;
-              }
-            }
-          }
-        }
-      }
-    }
     .block-ui-landing-page {
       min-height: calc(100% - (65px));
       background-color: $secondary-app-color-100;

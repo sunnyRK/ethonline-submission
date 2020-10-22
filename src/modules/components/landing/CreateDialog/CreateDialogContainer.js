@@ -44,13 +44,13 @@ class CreateDialogContainer extends Component {
       isWinnerDeclareofCurrent = true;
     } else if (betIds.length === 1) {
       isWinnerDeclareofLast = true;
-      winnerAddress = await podContract.methods.getWinnerAddress(betIds[betIds.length - 1]).call();
+      winnerAddress = await podContract.methods.getSingleWinnerAddress(betIds[betIds.length - 1]).call();
       if (winnerAddress !== '0x0000000000000000000000000000000000000000') {
         isWinnerDeclareofCurrent = true;
       }
     } else {
       isWinnerDeclareofLast = await podContract.methods.getWinnerDeclare(betIds[betIds.length - 2]).call();
-      winnerAddress = await podContract.methods.getWinnerAddress(betIds[betIds.length - 1]).call();
+      winnerAddress = await podContract.methods.getSingleWinnerAddress(betIds[betIds.length - 1]).call();
       if (winnerAddress !== '0x0000000000000000000000000000000000000000') {
         isWinnerDeclareofCurrent = true;
       }

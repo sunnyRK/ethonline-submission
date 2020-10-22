@@ -48,7 +48,7 @@ const ParticipantNFTs = () => (
     <div className="participant-nfts">
       {ParticipantNFTsList.map((nft) => (
         <div className="nft-container">
-          <img src={nft.image} className="nft" alt="nft" />
+          {/* <img src={nft.image} className="nft" alt="nft" /> */}
           <div className="nft-info">
             <div className="pod-name">{nft.podName}</div>
             <div className="price">{nft.price}</div>

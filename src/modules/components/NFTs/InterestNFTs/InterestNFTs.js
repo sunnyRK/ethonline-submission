@@ -1,60 +1,33 @@
-import NFT1 from '../../../../assets/images/nft1.jpg';
-import NFT2 from '../../../../assets/images/nft2.jpg';
-import NFT3 from '../../../../assets/images/nft3.jpg';
-// import NFT4 from '../../../../assets/images/nft4.webp';
-import NFT5 from '../../../../assets/images/nft5.jpg';
+import { Button } from '@material-ui/core';
 
-const InterestNFTsList = [
-  {
-    key: 1,
-    value: 'NFT1',
-    image: NFT1,
-    podName: 'Pod Name',
-    price: '$20',
-  },
-  {
-    key: 2,
-    value: 'NFT2',
-    image: NFT2,
-    podName: 'Pod Name',
-    price: '$20',
-  },
-  {
-    key: 3,
-    value: 'NFT3',
-    image: NFT3,
-    podName: 'Pod Name',
-    price: '$20',
-  },
-  {
-    key: 4,
-    value: 'NFT4',
-    image: NFT1,
-    podName: 'Pod Name',
-    price: '$20',
-  },
-  {
-    key: 5,
-    value: 'NFT5',
-    image: NFT2,
-    podName: 'Pod Name',
-    price: '$20',
-  },
-];
-
-const InterestNFTs = () => (
+const InterestNFTs = ({ heading, nftsList, onRedeemClick }) => (
   <div className="interest-nfts-container">
-    <h3 className="heading">Interest NFTs</h3>
+    <h3 className="heading">{heading || 'NFTs'}</h3>
     <div className="interest-nfts">
-      {InterestNFTsList.map((nft) => (
+      {console.log('nftsList=====', nftsList)}
+      {/* {console.log('Object.keys(nftsList).length=====', Object.keys(nftsList).length)} */}
+      {nftsList.length > 0 ? nftsList.map((nft) => (
         <div className="nft-container">
-          <img src={nft.image} className="nft" alt="nft" />
-          <div className="nft-info">
-            <div className="pod-name">{nft.podName}</div>
-            <div className="price">{nft.price}</div>
+          <div className="nft">
+            <div className="nft-info">
+              <div className="price">{nft.price}</div>
+              <div className="pod-name">{nft.tokenId}</div>
+            </div>
+          </div>
+          <div className="redeem-button-wrapper">
+            <Button
+              className="redeem-button"
+              disableRipple
+              disableElevation
+              // variant="contained"
+              onClick={() => onRedeemClick(nft.tokenId)}
+            >
+              {console.log('nft=====', nft)}
+              {nft.isDead ? 'Already Redeemed' : 'Redeem'}
+            </Button>
           </div>
         </div>
-      ))}
+      )) : <div className="no-data">No NFTs</div>}
     </div>
   </div>
 );

@@ -39,7 +39,7 @@ class DisburseDialogContainer extends Component {
       alert("You can't disburse");
     } else if(betIds.length == 1) {
       isWinnerDeclare = await podContract.methods.getWinnerDeclare(betIds[betIds.length-1]).call();
-      winnerAddress = await podContract.methods.getWinnerAddress(betIds[betIds.length-1]).call();
+      winnerAddress = await podContract.methods.getSingleWinnerAddress(betIds[betIds.length-1]).call();
       if(winnerAddress != "0x0000000000000000000000000000000000000000" && !isWinnerDeclare){
         await yieldPodContract.methods.disburseAmount(
           betIds[betIds.length-1]
@@ -51,7 +51,7 @@ class DisburseDialogContainer extends Component {
       }
     } else {
       isWinnerDeclare = await podContract.methods.getWinnerDeclare(betIds[betIds.length-2]).call();
-      winnerAddress = await podContract.methods.getWinnerAddress(betIds[betIds.length-2]).call();
+      winnerAddress = await podContract.methods.getSingleWinnerAddress(betIds[betIds.length-2]).call();
       if(winnerAddress != "0x0000000000000000000000000000000000000000" && !isWinnerDeclare){
         await yieldPodContract.methods.disburseAmount(
           betIds[betIds.length-2]

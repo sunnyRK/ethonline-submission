@@ -1,0 +1,64 @@
+.nfts-container {
+  display: flex;
+  flex-direction: column;
+  flex: 2;
+  .interest-nfts, .participant-nfts {
+    flex: 1;
+  }
+  .interest-nfts-container, .participant-nfts-container {
+    padding: 20px;
+    .heading {
+      color: #a9e3ff;
+      font-weight: 600;
+    }
+    .interest-nfts, .participant-nfts {
+      padding: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      .no-data {
+        color: #fff;
+        font-size: 20px;
+        display: flex;
+        justify-content: center;
+      }
+      .nft-container {
+        padding: 0 20px 20px 0;
+        display: flex;
+        flex-direction: column;
+        width: calc(100%/5);
+        .nft {
+          width: 100%;
+          border: 1px solid red;
+          height: 300px;
+          border-radius: 5px;
+          .nft-info {
+            height: 100%;
+            justify-content: center;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            color: #ffffff;
+            .price {
+              color: #3baeff;
+              font-size: 16px;
+              font-weight: 700;
+            }
+            .pod-name {
+              font-weight: 600;
+              font-size: 20px;
+            }
+          }
+        }
+        .redeem-button-wrapper {
+          margin-top: 15px;
+          width: 100%;
+          .redeem-button {
+            width: 100%;
+            border: #41CD7D 1px solid;
+            color: #41CD7D;
+          }
+        }
+      }
+    }
+  }
+}

@@ -4,6 +4,7 @@ import MainTemplate from '../../shared/main-template/MainTemplateContainer';
 import Landing from './Landing';
 import web3 from '../../../../config/web3';
 import { getPodFactoryContract, getYieldPodContract, getPodStorageContract } from '../../../../config/instances/contractinstances';
+import { ownerAddress } from '../../utils';
 
 class LandingContainer extends Component {
   state = {
@@ -13,9 +14,9 @@ class LandingContainer extends Component {
     isCreateDialogOpen: false,
     isAdmin: false,
     podName: 'Pod Name',
-    numOfStakers: '0',
-    stakerCount: '0',
-    progress: '0',
+    // numOfStakers: '0',
+    // stakerCount: '0',
+    // progress: '0',
     interestGenerate: '0',
     minimumContribution: '0',
     yourInvestment: '0',
@@ -30,6 +31,7 @@ class LandingContainer extends Component {
     hours: '0',
     minutes: '0',
     seconds: '0',
+    totalParticipants: 0,
   };
 
   handleState = (state = {}) => {
@@ -38,13 +40,11 @@ class LandingContainer extends Component {
 
   async componentDidMount() {
     try {
-      window.ethereum.on('accountsChanged', accounts => {
+      window.ethereum.on('accountsChanged', () => {
         window.location.reload(true);
       });
-      console.log('entered====');
       const accounts = await web3.eth.getAccounts();
-      console.log('accounts.length=====', accounts.length);
-      if (accounts.length > 0 && accounts[0] === '0x55E73A69B2315A6e7192af118705079Eb1dB2184') {
+      if (accounts.length > 0 && accounts[0] === ownerAddress) {
         this.handleState({ isAdmin: true });
       }
 
@@ -54,37 +54,31 @@ class LandingContainer extends Component {
       const podName = await podContract.methods.getPodName(runningPodbetId).call();
       const timeStamp = await podContract.methods.getTimestamp(runningPodbetId).call();
 
-      // const numOfStakers = await podContract.methods.getNumOfStakers(runningPodbetId).call();
-      const stakerCount = await podContract.methods.getStakeCount(runningPodbetId).call();
-      // let totalWinning = await podContract.methods.getTotalWinning(accounts[0]).call();
-      // totalWinning = web3.utils.fromWei(totalWinning.toString(), 'ether');
-      // const betIdManager = await podContract.methods.getBetIdManager(runningPodbetId).call();
+      let totalWinning = await podContract.methods.getTotalWinning(accounts[0]).call();
+      totalWinning = web3.utils.fromWei(totalWinning.toString(), 'ether');
 
       const getPods = await podFactoryContract.methods.getPods().call();
-      console.log('getPods=====', getPods);
       const yieldPodContract = await getYieldPodContract(web3, getPods[getPods.length - 1]);
 
-      // console.log(getPods[getPods.length-1]);
       const balanceWithInterest = await yieldPodContract.methods.getBalanceofLendingToken(getPods[getPods.length - 1]).call();
       let totalStakeOnBet = await podContract.methods.getTotalStakeFromBet(runningPodbetId).call();
 
       const interest = balanceWithInterest - totalStakeOnBet;
       const interestGenerate = web3.utils.fromWei(interest.toString(), 'ether');
-      // console.log(interestGenerate);
 
       const minimumContribution = await podContract.methods.getMinimumContribution(runningPodbetId).call();
 
       const investment = await podContract.methods.getStakeforBet(runningPodbetId, accounts[0]).call();
       const yourInvestment = web3.utils.fromWei(investment.toString(), 'ether');
-      // console.log(minimumContribution);
 
       totalStakeOnBet = web3.utils.fromWei(totalStakeOnBet.toString(), 'ether');
 
-      const betIds = await podContract.methods.getBetIdArrayOfManager(accounts[0]).call();
-      console.log('betIds=====', betIds);
+      const betIds = await podContract.methods.getBetIdArrayOfManager(ownerAddress).call();
+      const totalParticipants = await podContract.methods.getLengthOfStakersARray(betIds[betIds.length - 1]).call();
       if (getPods.length > 1 && betIds.length > 1) {
         const lastPodName = await podContract.methods.getPodName(betIds[betIds.length - 2]).call();
-        const lastWinnerAddress = await podContract.methods.getSingleWinnerAddress(betIds[betIds.length - 2]).call();
+        const lastWinnerIndex = await podContract.methods.getSingleWinnerAddress(betIds[betIds.length - 2]).call();
+        const lastWinnerAddress = await podContract.methods.getWinnerAddressByIndex(betIds[betIds.length - 2], lastWinnerIndex).call();
         const lastWinnerDeclare = await podContract.methods.getWinnerDeclare(betIds[betIds.length - 2]).call();
         let lastPrizeAmt;
         if (lastWinnerDeclare) {
@@ -102,25 +96,18 @@ class LandingContainer extends Component {
           lastPrizeAmt,
           lastWinnerAddress,
           lastWinnerDeclare,
+          totalParticipants,
         });
       }
 
-      // const mul = stakerCount * 100;
-      // const progress = mul / numOfStakers;
-
-      // console.log(progress)
-
       this.setState({
         podName,
-        // numOfStakers,
         interestGenerate,
         minimumContribution,
         yourInvestment,
         totalStakeOnBet,
-        stakerCount,
-        // progress,
         timeStamp,
-        // totalWinning,
+        totalWinning,
       }, () => {
         this.countDownTimer();
         setInterval(() => { this.generateInterest(); }, 10000);
@@ -146,19 +133,15 @@ class LandingContainer extends Component {
 
   countDownTimer = () => {
     const { timeStamp } = this.state;
-    console.log("Timestap: ",timeStamp);
     const countDownDate = timeStamp || Date.now();
-    // const countDownDate = Date.now();
 
     // Update the count down every 1 second
     const x = setInterval(() => {
-      
       // Get today's date and time
       const now = new Date().getTime();
-      console.log("now: ",now)
 
       // Find the distance between now and the count down date
-      const distance = (countDownDate*1000) - now;
+      const distance = (countDownDate * 1000) - now;
 
       // Time calculations for days, hours, minutes and seconds
       const days = Math.floor(distance / (1000 * 60 * 60 * 24));
@@ -189,7 +172,6 @@ class LandingContainer extends Component {
   //   try {
   //     const accounts = await web3.eth.getAccounts();
   //     const podFactoryContract = await getPodFactoryContract(web3);
-      
   //   } catch (error) {
   //     alert(error);
   //   }
@@ -206,9 +188,9 @@ class LandingContainer extends Component {
           isCreateDialogOpen={this.state.isCreateDialogOpen}
           isAdmin={this.state.isAdmin}
           podName={this.state.podName}
-          numOfStakers={this.state.numOfStakers}
-          progress={this.state.progress}
-          stakerCount={this.state.stakerCount}
+          // numOfStakers={this.state.numOfStakers}
+          // progress={this.state.progress}
+          // stakerCount={this.state.stakerCount}
           interestGenerate={this.state.interestGenerate}
           minimumContribution={this.state.minimumContribution}
           yourInvestment={this.state.yourInvestment}
@@ -223,6 +205,7 @@ class LandingContainer extends Component {
           lastPodName={this.state.lastPodName}
           lastPrizeAmt={this.state.lastPrizeAmt}
           lastWinnerAddress={this.state.lastWinnerAddress}
+          totalParticipants={this.state.totalParticipants}
         />
       </MainTemplate>
     );

@@ -1,5 +1,5 @@
 {
-  "name": "aavepod",
+  "name": "instcrypt",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -36,17 +36,9 @@
     "web3": "^1.2.4",
     "web3-utils": "^1.2.4"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sunnyRK/aavepod-encodechallege.git"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/sunnyRK/aavepod-encodechallege/issues"
-  },
-  "homepage": "https://github.com/sunnyRK/aavepod-encodechallege#readme",
   "devDependencies": {
     "eslint": "^7.4.0",
     "eslint-config-airbnb": "^18.2.0",

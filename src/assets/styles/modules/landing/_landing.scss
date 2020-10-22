@@ -23,7 +23,7 @@
     }
     .join-pod {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
       .pod-progressbar {
         flex-grow: 1;
@@ -187,7 +187,7 @@
       }
     }
     .disburse-button {
-      margin-top: 8px;
+      margin-top: 16px;
     }
   }
 

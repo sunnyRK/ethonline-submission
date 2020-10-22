@@ -16,6 +16,11 @@ const menuItems = [
     value: 'NFTs',
     path: 'nfts',
   },
+  {
+    key: 2,
+    value: 'Piggy Bank',
+    path: 'piggy-bank',
+  },
 ];
 
 const MainTemplate = ({
@@ -24,7 +29,7 @@ const MainTemplate = ({
 }) => (
   <div className="main-template">
     <div className="main-header">
-      <div className="app-name">Alarm-POD</div>
+      <div className="app-name">InstCrypt</div>
       <div className="header-menu-items">
         {
           menuItems.map((menuItem, index) => (
@@ -64,15 +69,6 @@ const MainTemplate = ({
                   <List.Item as="a" href="mailto:radadiyasunny970@gmail.com">radadiyasunny970@gmail.com</List.Item>
                   <List.Item as="a" href="mailto:rajatbeladiya7@gmail.com">rajatbeladiya7@gmail.com</List.Item>
                 </List>
-              </Grid.Column>
-
-              <Grid.Column width={5}>
-                <Header as="h4" inverted>
-                  Developed During Spark-Encode Club Hackathon
-                </Header>
-                <p>
-                  Aave and Chainlink protocol 
-                </p>
               </Grid.Column>
             </Grid.Row>
           </Grid>

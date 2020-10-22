@@ -1,0 +1,44 @@
+.piggy-bank-container {
+  width: 100%;
+  .piggy-bank-content {
+    height: 100%;
+    .piggy-bank {
+      height: 100%;
+      display: flex;
+      // justify-content: space-around;
+      align-items: center;
+      .piggy-list-item {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        flex: 1;
+        height: 310px;
+        &:not(:last-child) {
+          border-right: red 1px solid;
+          // border-right: #41CD7D 1px solid;
+        }
+        .title-value {
+          color: #3baeff;
+          font-size: 32px;
+          font-weight: 700;
+        }
+        .title {
+          font-weight: 600;
+          font-size: 25px;
+          color: #ffffff;
+        }
+        .claim-button-wrapper {
+          width: 190px;
+          margin-bottom: -55px;
+          padding-top: 10px;
+          .claim-button {
+            width: 100%;
+            border: #41CD7D 1px solid;
+            color: #41CD7D;
+          }
+        }
+      }
+    }
+  }
+}

@@ -32,6 +32,7 @@ class LandingContainer extends Component {
     minutes: '0',
     seconds: '0',
     totalParticipants: 0,
+    landingLoading: true,
   };
 
   handleState = (state = {}) => {
@@ -40,6 +41,7 @@ class LandingContainer extends Component {
 
   async componentDidMount() {
     try {
+      this.setState({ landingLoading: true });
       window.ethereum.on('accountsChanged', () => {
         window.location.reload(true);
       });
@@ -97,6 +99,7 @@ class LandingContainer extends Component {
           lastWinnerAddress,
           lastWinnerDeclare,
           totalParticipants,
+          landingLoading: false,
         });
       }
 
@@ -181,6 +184,7 @@ class LandingContainer extends Component {
     return (
       <MainTemplate>
         <Landing
+          landingLoading={this.state.landingLoading}
           handleState={this.handleState}
           isJoinDialogOpen={this.state.isJoinDialogOpen}
           isRedeemDialogOpen={this.state.isRedeemDialogOpen}

@@ -6,7 +6,7 @@ InstCryp creates a NFT MarketPlace using different legos of defi blockchian. lik
 1). no-loss and crypto saving platform to win interest NFT.  
 2). different yield stratergy(Compound, AAVE and yearn) for your NFT.  
 3). Chainlink Alarm clock and VRF to support defi automation and randomness on NFT.  
-4). NFT yield-farming like sushiswap.   
+4). developed PiggBank protocol which is NFT yield-farming like sushiswap.   
 ```
 ## Video Demo
 

@@ -12,11 +12,10 @@ import "../interfaces/yearnInterface/IYDAI.sol";
 import "../interfaces/chainlinkInterface/IchainlinkAlarm.sol";
 import "../interfaces/storageInterface/IPodStorageInterface.sol";
 import "../storage/podStorage.sol";
-import "./PodFactory.sol";
 import "../interfaces/INftInterface.sol";
+import "../interfaces/IPiggyInterface.sol";
 
-// aDai kovan : 0x58ad4cb396411b691a9aab6f74545b2c5217fe6a
-
+// "0xFf795577d9AC8bD7D90Ee22b6C1703490b6512FD","0x58ad4cb396411b691a9aab6f74545b2c5217fe6a"
 contract yieldpod {
     using SafeMath for uint256;
     uint256 public nonce = 0;
@@ -37,8 +36,9 @@ contract yieldpod {
     IERC20 public regularToken;
     IERC20 public lendingToken; // AAVE || yearn || Compound
     IPodStorageInterface iPodStorageInterface;
-    IchainlinkAlarm iChainlinkAlarm;
-    INftInterface iNftInterface;
+    IchainlinkAlarm public iChainlinkAlarm;
+    INftInterface public iNftInterface;
+    IPiggyInterface public iPiggyInterface;
     
     // Events
     event Deposit(uint256 amount, address indexed user, address indexed tokenAddress);
@@ -50,8 +50,9 @@ contract yieldpod {
         address _tokenAddress, address _lendingAddress, address _podManager, string memory _betName) 
         public 
     {
-        iPodStorageInterface = IPodStorageInterface(0x5fc61A9d612626332bf8f24a4DF751D24f98e210);
-        iNftInterface = INftInterface(0xfCEf30351C167e310Fc4ed65Ff2BD46bAA40C28C);
+        iPodStorageInterface = IPodStorageInterface(0xB9F97358877022a8e02661469f8eC9832d408FF3);
+        iNftInterface = INftInterface(0x5b9baea74964883F47f66240f6050bc0656ffC50);
+        iPiggyInterface = IPiggyInterface(0x5660343beaE9f71Ec8298974A44Cd1A5549f3696);
         regularToken = IERC20(_tokenAddress);
         lendingToken = IERC20(_lendingAddress);
         uint256 betId = now;
@@ -82,7 +83,7 @@ contract yieldpod {
             yDai = IYDAI(_lendingAddress);  // Mainnet: 0xACd43E627e64355f1861cEC6d3a6688B31a6F952 
         }
         
-        iChainlinkAlarm = IchainlinkAlarm(0x8c3d765c553D79B0087F8D93543a3d09f40C5CCD);
+        iChainlinkAlarm = IchainlinkAlarm(0x55d3509F3309Ca83624cd20fC27b26D93Ba288d1);
         iChainlinkAlarm.delayStart(0x2f90A6D021db21e1B2A077c5a37B3C7E75D15b7e, "a7ab70d561d34eb49e9b1612fd2e044b", timeStamp);
     }
     
@@ -96,7 +97,6 @@ contract yieldpod {
         iPodStorageInterface.setStakeforBet(_betId, amount, msg.sender);
         iPodStorageInterface.addAmountInTotalStake(_betId, amount);
         
-        // address daiAddress = address(0xFf795577d9AC8bD7D90Ee22b6C1703490b6512FD); // kovan DAI
         regularToken.transferFrom(msg.sender, address(this), amount);
         
         if (iPodStorageInterface.getYieldMechanism(_betId) == 0) {
@@ -117,13 +117,13 @@ contract yieldpod {
     function disburseAmount(uint256 _betId) public {
         require(!iPodStorageInterface.getWinnerDeclare(_betId), "Winner declare and bet is expired.");
         require(iPodStorageInterface.getBetIdManager(_betId) == msg.sender, "You are not manager");
-        if (iPodStorageInterface.getYieldMechanism(_betId) == 0) {
-            atoken.redeem(getBalanceofLendingToken(address(this)));
-        } else if(iPodStorageInterface.getYieldMechanism(_betId) == 1) {
-            cToken.redeem(getBalanceofLendingToken(address(this)));
-        } else if(iPodStorageInterface.getYieldMechanism(_betId) == 2) {
-            yDai.withdraw(getBalanceofLendingToken(address(this)));
-        }
+        // if (iPodStorageInterface.getYieldMechanism(_betId) == 0) {
+        //     atoken.redeem(getBalanceofLendingToken(address(this)));
+        // } else if(iPodStorageInterface.getYieldMechanism(_betId) == 1) {
+        //     cToken.redeem(getBalanceofLendingToken(address(this)));
+        // } else if(iPodStorageInterface.getYieldMechanism(_betId) == 2) {
+        //     yDai.withdraw(getBalanceofLendingToken(address(this)));
+        // }
         if(iPodStorageInterface.isSingleOrMultipleWinner(_betId) == 0) {
             _singleWinner(_betId); // magic happens here
         } else if (iPodStorageInterface.isSingleOrMultipleWinner(_betId) == 1) {
@@ -159,26 +159,30 @@ contract yieldpod {
     }
     
     function _singleWinner(uint256 _betId) internal {
-        uint256 interest = getBalanceofRegularToken(address(this)).sub(iPodStorageInterface.getTotalStakeFromBet(_betId));
+        uint256 interest = getBalanceofLendingToken(address(this)).sub(iPodStorageInterface.getTotalStakeFromBet(_betId)); // change
         address[] memory stakers = iPodStorageInterface.getStakersArrayForBet(_betId);
         
         uint256 winnerIndex = iPodStorageInterface.getSingleWinnerAddress(_betId);
         for(uint i=0; i<stakers.length; i++) {
             if(!iPodStorageInterface.getRedeemFlagStakerOnBet(_betId, stakers[i])) {
                 if(winnerIndex != i) {
-                    regularToken.transfer(stakers[i], iPodStorageInterface.getStakeforBet(_betId, stakers[i]));
+                    // regularToken.transfer(stakers[i], iPodStorageInterface.getStakeforBet(_betId, stakers[i]));
                 } else {
-                    iPodStorageInterface.setTotalWinning(stakers[i], interest);
-                    iPodStorageInterface.mintInterestNft(_betId, interest, msg.sender);
-                    regularToken.transfer(stakers[i], iPodStorageInterface.getStakeforBet(_betId, stakers[i]));
+                    uint256 interestTokenId = now;
+                    iPodStorageInterface.setTotalWinning(stakers[i], interestTokenId);
+                    iPodStorageInterface.mintInterestNft(_betId, interest, interestTokenId, msg.sender);
+                    iPiggyInterface.depositNFT(0, stakers[i], interestTokenId);
                 }
-                iPodStorageInterface.burnNft(_betId, stakers[i]);
+                (uint256 tokenId,,) = iPodStorageInterface.getNftDetail(_betId, stakers[i]);
+                iPiggyInterface.depositNFT(0, stakers[i], tokenId);
             }
         }
+        lendingToken.transfer(address(iPiggyInterface), getBalanceofLendingToken(address(this)));
         iPodStorageInterface.setInterest(_betId, interest);
         emit singleWinnerDeclare(_betId, interest, winnerIndex);
     }
     
+    // not tested
     function _multipleWInner(uint256 _betId) internal {
         uint256 interest = getBalanceofRegularToken(address(this)).sub(iPodStorageInterface.getTotalStakeFromBet(_betId));
         address[] memory stakers = iPodStorageInterface.getStakersArrayForBet(_betId);
@@ -187,14 +191,16 @@ contract yieldpod {
         for(uint i=0; i<stakers.length; i++) {
             if(!iPodStorageInterface.getRedeemFlagStakerOnBet(_betId, stakers[i])) {
                 if(winnerIndexes[winnerTracker] != i) {
-                    regularToken.transfer(stakers[i], iPodStorageInterface.getStakeforBet(_betId, stakers[i]));
+                    // regularToken.transfer(stakers[i], iPodStorageInterface.getStakeforBet(_betId, stakers[i]));
                     winnerTracker = winnerTracker.add(1);
                 } else {
-                    iPodStorageInterface.mintInterestNft(_betId, interest.div(winnerIndexes.length), msg.sender);
-                    regularToken.transfer(stakers[i], iPodStorageInterface.getStakeforBet(_betId, stakers[i]).add(interest).div(winnerIndexes.length));
+                    uint256 tokenId = now;
+                    iPodStorageInterface.setTotalWinning(stakers[i], interest);
+                    iPodStorageInterface.mintInterestNft(_betId, interest.div(winnerIndexes.length), tokenId, msg.sender);
+                    // regularToken.transfer(stakers[i], iPodStorageInterface.getStakeforBet(_betId, stakers[i]).add(interest).div(winnerIndexes.length));
                 }   
             }
-            iPodStorageInterface.burnNft(_betId, stakers[i]);
+            // iPodStorageInterface.burnNft(_betId, stakers[i]);
         }
         emit multipleWinnerDeclare(_betId, interest, winnerIndexes);
     }

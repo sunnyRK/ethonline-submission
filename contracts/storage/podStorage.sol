@@ -61,7 +61,7 @@ contract podStorage {
     INftInterface iNftInterface;
     
     constructor() public {
-        iNftInterface = INftInterface(0xfCEf30351C167e310Fc4ed65Ff2BD46bAA40C28C);
+        iNftInterface = INftInterface(0x5b9baea74964883F47f66240f6050bc0656ffC50);
     }
     
     function setBetIDManager(uint256 betId, address manager) public {
@@ -232,6 +232,10 @@ contract podStorage {
         return stakersOfBet[betId].length;
     }
     
+    function getWinnerAddressByIndex(uint256 _betId, uint256 _index) public view returns(address) {
+        return stakersOfBet[_betId][_index];
+    }
+    
     function setBetTokens(uint256 betId, address _tokenAddress, address _lendingToken) public {
         betIdTokensMapping[betId].tokenAddress = _tokenAddress;
         betIdTokensMapping[betId].lendingToken = _lendingToken;
@@ -273,9 +277,9 @@ contract podStorage {
         nftTobetIdMapping[tokenId] = betId;
     }
     
-    function mintInterestNft(uint256 betId, uint256 price, address staker) public {
+    function mintInterestNft(uint256 betId, uint256 price, uint256 tokenId, address staker) public {
         interestNftDetails storage inftDetails = interestNftDetailsMapping[betId][staker];
-        uint256 tokenId = now;
+        // uint256 tokenId = now;
         iNftInterface._safeMints(staker, tokenId);
         inftDetails.tokenId = tokenId;
         inftDetails.price = price;
@@ -310,5 +314,9 @@ contract podStorage {
             interestNftDetailsMapping[betId][staker].price,
             interestNftDetailsMapping[betId][staker].isDead
         );
+    }
+    
+    function getBetIDForNFT(uint256 tokenId) public view returns(uint256) {
+        return nftTobetIdMapping[tokenId];
     }
 }

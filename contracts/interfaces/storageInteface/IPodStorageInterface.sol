@@ -56,6 +56,7 @@ interface IPodStorageInterface {
     function setNewStakerForBet(uint256 betId, address staker) external;
     function getStakersArrayForBet(uint256 betId) external view returns(address[] memory);
     function getLengthOfStakersARray(uint256 betId) external view returns(uint256);
+    function getWinnerAddressByIndex(uint256 _betId, uint256 _index) external view returns(address);
     
     function setBetTokens(uint256 betId, address _tokenAddress, address _aaveToken) external;
     function getBetTokens(uint256 betId) external view returns(address, address);
@@ -67,10 +68,10 @@ interface IPodStorageInterface {
     function getRedeemFlagStakerOnBet(uint256 betId, address staker) external view returns(bool);
     
     function mintNft(uint256 betId, uint256 price, address staker) external;
-    function mintInterestNft(uint256 betId, uint256 price, address staker) external;
+    function mintInterestNft(uint256 betId, uint256 price, uint256 tokenId, address staker) external;
     function burnNft(uint256 betId, address staker) external;
     function burnInterestNft(uint256 betId, address staker) external;
-
     function getNftDetail(uint256 betId, address staker) external view returns(uint256, uint256, bool);
     function getInterestNftDetail(uint256 betId, address staker) external view returns(uint256, uint256, bool);
+    function getBetIDForNFT(uint256 tokenId) external view returns(uint256);
 }

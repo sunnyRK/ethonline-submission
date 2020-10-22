@@ -18,7 +18,7 @@ contract ChainlinkAlarmClock is ChainlinkClient, Ownable {
 
     constructor(uint256 _oraclePayment) public {
         // Set VRF address to interact with Chainlink vrf contract 
-        vrf = IVrf(0x89f97ED432DDb2dC18b0FA3cF20183EeC9948b6a);
+        vrf = IVrf(0x4837C9e31AD00088307aDA03E295459e642c5B1e);
         setPublicChainlinkToken();
         oraclePayment = _oraclePayment;
     }

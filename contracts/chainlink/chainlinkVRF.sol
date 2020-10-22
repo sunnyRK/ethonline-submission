@@ -18,7 +18,7 @@ contract ChainlinkVRF is VRFConsumerBase {
             0xa36085F69e2889c224210F603D836748e7dC0088  // LINK Token
         ) public
     {
-        iPodStorageInterface = IPodStorageInterface(0x6096143b28c632490C8D9bA1e06dfaD9f0a90Cc6);
+        iPodStorageInterface = IPodStorageInterface(0xB9F97358877022a8e02661469f8eC9832d408FF3);
         keyHash = 0x6c3699283bda56ad74f6b855546325b68d482e983852a7a82979cc4807b641f4;
         fee = 0.1 * 10 ** 18; // 0.1 LINK
     }

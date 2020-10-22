@@ -11,7 +11,7 @@ InstCryp creates a NFT MarketPlace using different legos of defi blockchian. lik
 ## Video Demo
 
 https://youtu.be/LKC2qWUtutI  
-[![AAVE+Compound+Yearn+Chainlink](Screenshots/piggybank2.png)](https://youtu.be/LKC2qWUtutI "InstCryp")
+[![AAVE+Compound+Yearn+Chainlink](Screenshots/InstCryp.png)](https://youtu.be/LKC2qWUtutI "InstCryp")
 
 ### How can we Participate in InstCryp?  
 

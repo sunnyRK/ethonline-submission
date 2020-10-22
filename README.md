@@ -1,91 +1,71 @@
-# Alarm-POD (Sponser AAVE)
+# InstCryp(NFT-Marketplace)  
 
-# Alarm-POD developed during Spark Hackathon By Encode Club.
+```
+InstCryp creates a NFT MarketPlace using different legos of defi blockchian. like,
 
-## Phase-1 (Fully Implemented)
+1). no-loss and crypto saving platform to win interest NFT.  
+2). different yield stratergy(Compound, AAVE and yearn) for your NFT.  
+3). Chainlink Alarm clock and VRF to support defi automation and randomness on NFT.  
+4). NFT yield-farming like sushiswap.   
+```
+### How can we Participate in InstCryp?  
 
-Alarm-POD is no-loss and crypto saving platform to win interest using trustless blockchain technology. Using AAVE protocol, chainlink alarm clock and chainlink VRF function.
+    1). Automatic InstCryp-POD
 
-When Contract owner will create POD, it trigger the chainlink alarm clock to wait until to finish time-period.
+`Pod is created by admin with predefined time and users comes to pod and deposit tokens to pod and it will earn interest on all users crypto tokens from lending protocols.`
 
-During this time period it accures interest using AAVE Lending protocol on deposited crypto token which is deposited by participants(staker).  
-And during this time period any one can see live interest generate on dashboard.
+Users comes to platform Initially and deposit the `DAI or USDC` token in POD and as a credit a user will get `stablecoin backed participant NFTs`. 
 
-Once Time-period complete the chainlink-alarm-clock recognize it. and then using callback function of chainlink-alarm-clock, it triggers automatically the chainlink VRF function to get the winner among participant using randomness functionality of VRF. 
+Pod will deposit all tokens on lending protocols to earn interest and when predefined time completes then `chainlink alarm clock` verifies and stops all operation of pod and declare winner automatically using `chainlink-VRF` among all particiapants.
 
-So It is totally automated and trustless system to accure interest and choose winner. Not dependent on any third-party.
+Pod will create a `Interest-NFT` as a winnig prize which is backed by generated interest and send to POD-Winner.  
+    
+    2). NFT Yield-Farming Time with PiggyBank 
 
-once Chainlink VRF decide the winner, platform disburse all the original tokens to all users and "original token + interest" to winner.
+Whatever NFTs generate in InstCryp-POD smart contract transfer all the `participant and Interest NFTs` to `PiggyBank`.
 
-Let's see demo below for Phase-1....
+`PiggyBank is the yield -famring protocol like sushiswap. where platform deposit your all NFTs on PiggyBank and generate piggy Token backed NFTs as a reward.`
 
-## Video Demo
+Even if someone doesn't win the prize pool, they could collect the participation NFTs and then when they amass a certain number (say 10), they could earn piggy token backed NFTs on the platform.
 
-https://youtu.be/LKC2qWUtutI  
-[![AAVE+Chainlink](Screenshots/aavechainlink.png)](https://youtu.be/LKC2qWUtutI "Alarm-POD")
-## How to run
+Even Interest-NFTs can also use for further to earn reward piggy-NFTs using PiggyBank. 
 
-1. Clone repo `https://github.com/sunnyRK/aavepod-encodechallege.git`
-2. `cd aavepod-encodechallege` 
-2. `npm install`
-3. `node server.js`
-4. Currently deployed on Kovan Network
+### Why NFTs?
+    a). Every NFTs will be backed by different amount of stablecoin tokens.  
+    b). By the collection of NFTs the platform can measure the user's engagement with platform.  
+    c). By user's measurement, platform can maintain future reward distribution plans.  
 
-## Screenhots
+### Governance
+To change in protocol we will use compound-governance smart contract which is used to decide the change in any stratergy protocol(like Winning starteregy, yield stratergy, farming startergy, blocks per reward startergy etc.).
 
-#### 1. Create POD by contract owner 
-![createpod](Screenshots/Screenshot1.png)
+### Other Features
 
-#### 2. You can see Pod is created and Chainlink Alarm clock is triggered and timer is running 
-![Chainlink-alarm-clock](Screenshots/Screenshot2.png)
+1). Single Winner or Multiple Winner startergy  
+2). Yield-startergy (compound || AAVE| yearn)  
+3). Governance
+4). Yield-Farming like sushiswap 
+5). Redeem single NFT or Redeem all NFTs for stablecoin
 
-#### 3. One of the participant is joining the pod with DAI token 
-![participate](Screenshots/Screenshot3.png)
+### How to run  
+1). Clone repo `https://github.com/sunnyRK/ethonline-submission.git`  
+2). cd ethonline-submission  
+3). npm install  
+4). node server.js  
+5). Currently deployed on Kovan Network
 
-#### 4. You can see in pod,
-    - Estimated prize as a live interest is accuring from AAVE protocol
-    - totalcontract balance generated from all of the paricipant
-    - Your Investment from total pod balalnce
-    - and Joining amount required to join in pod
-![Poddetails](Screenshots/Screenshot4.png)
+### Tech Stack
+1). Compound  
+AAVE  
+Yearn  
+Chainlink Alarm Clock  
+Chainlink VRF  
+NFTs  
+Ethereum  
+React-JS  
+    
 
-#### 5. After Chainlink alarm clock recognized that timer is finish, then chainlink VRF declared winner
-![winnerDeclare](Screenshots/Screenshot5.png)
 
-#### 6. New pod is created and that old pod comes right side with winning and prize details. And Contract owner can disburse amount to all participant. 
-![old-pod](Screenshots/Screenshot6.png)
 
-#### 7. Disburse amount by contract owner 
-![disburse](Screenshots/Screenshot7.png)
 
-#### 8. You can check winner total prize in right side top - as a "YOUR TOTAL WINNING" 
-![totalwinning](Screenshots/Screenshot8.png)
 
-## Current Future Task in mind
-1. Use ENS(Ethreum name service) to give more flexibilty to user.
 
-## Phase-2 (AaveBalancerAggregator) 
-
-`Note: Phase-2 is not fully implemented.`
-
-![AAVE+Balancer+Chainlink](Screenshots/aavechainlinkbalancer.png)
-
-In Phase-2, We want to make innovative podding system where staker or participant can earn double interest. Where participant will deposit crypto tokens in pod and internally platform will deposit into `AAVE protocol` to accure interest.  
-
-AAVE protocol will give `Aave intrest bearing tokens(like for DAI to aDAI)`. So, platform that aave interest bearing tokens will deposit into `Balancer protocol` to earn trading fees onto deposited tokens.
-
-In Summarize, It is `AaveBalancerAggregator`. We are making platform where participant can earn `double interest` using `AAVE interest bearing` tokens and `Balancer Trading fees`. 
-
-This feature is `not fully implemented` with UI. We have implemented demo(not fully) smart contract for aave and balancer for this usecase.  
-
-## Tech stack
-
-Ethereum   
-Solidity   
-Web3.js  
-AAVE - To Earn interest  
-Chainink Decentralized Oracles  
-    - Chainlink Alarm Clock - To wait for particular time-period to finish POD  
-    - Chainlink VRF - To choose winner  
-Next.Js  
-Semantic UI React

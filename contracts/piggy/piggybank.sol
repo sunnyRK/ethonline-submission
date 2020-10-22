@@ -178,7 +178,7 @@ contract piggybank is Ownable {
         uint256 piggyReward = blocksToReward.mul(pool.rewardPerBlock);
         piggyToken.mint(devAddress, piggyReward.mul(DEV_FEE).div(100));
         piggyToken.mint(address(this), piggyReward);
-        pool.accNftPerShare = pool.accNftPerShare.add(piggyReward.mul(1e12).div(pool.totalPoolBalance));
+        pool.accNftPerShare = pool.accNftPerShare.add(piggyReward.mul(1e12));
         pool.lastRewardBlock = block.number;
     }
     
@@ -190,7 +190,7 @@ contract piggybank is Ownable {
         if (block.number > pool.lastRewardBlock && lpSupply != 0) {
             uint256 blocksToReward = block.number.sub(pool.lastRewardBlock);
             uint256 piggyReward = blocksToReward.mul(pool.rewardPerBlock);
-            accNftPerShare = accNftPerShare.add(piggyReward.mul(1e12).div(lpSupply));
+            accNftPerShare = accNftPerShare.add(piggyReward.mul(1e12));
         }
         return user.amount.mul(accNftPerShare).div(1e12).sub(user.rewardDebt);
     }

@@ -52,7 +52,7 @@ contract yieldpod {
     {
         iPodStorageInterface = IPodStorageInterface(0xB9F97358877022a8e02661469f8eC9832d408FF3);
         iNftInterface = INftInterface(0x5b9baea74964883F47f66240f6050bc0656ffC50);
-        iPiggyInterface = IPiggyInterface(0x5660343beaE9f71Ec8298974A44Cd1A5549f3696);
+        iPiggyInterface = IPiggyInterface(0x708bdab2170AdDb879c85CF6DBC94f7E45ec0fb5);
         regularToken = IERC20(_tokenAddress);
         lendingToken = IERC20(_lendingAddress);
         uint256 betId = now;

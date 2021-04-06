@@ -30,7 +30,7 @@
     "sass": "^1.26.10",
     "semantic-ui-react": "^0.88.2",
     "solc": "^0.5.12",
-    "styled-components": "^4.2.0",
+    "styled-components": "^5.2.3",
     "truffle": "^5.1.34",
     "truffle-hdwallet-provider": "0.0.3",
     "web3": "^1.2.4",

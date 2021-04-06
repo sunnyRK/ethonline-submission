@@ -13,7 +13,7 @@
     "@zeit/next-sass": "^1.0.1",
     "bootstrap": "^4.5.0",
     "cross-fetch": "^3.0.5",
-    "ethereumjs-util": "^6.2.0",
+    "ethereumjs-util": "^7.0.10",
     "ethereumjs-wallet": "^0.6.3",
     "fs": "0.0.1-security",
     "next": "^9.1.5",

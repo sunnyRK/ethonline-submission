@@ -27,7 +27,7 @@
     "react-scripts": "4.0.3",
     "react-toastify": "^7.0.3",
     "rimble-ui": "^0.14.0",
-    "sass": "^1.32.8",
+    "sass": "^1.32.11",
     "semantic-ui-react": "^2.0.3",
     "solc": "^0.8.4",
     "styled-components": "^5.2.3",

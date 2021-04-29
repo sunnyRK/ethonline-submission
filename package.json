@@ -25,7 +25,7 @@
     "react-bootstrap": "^1.5.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
-    "react-toastify": "^7.0.3",
+    "react-toastify": "^7.0.4",
     "rimble-ui": "^0.14.0",
     "sass": "^1.32.11",
     "semantic-ui-react": "^2.0.3",

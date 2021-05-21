@@ -16,7 +16,7 @@
     "ethereumjs-util": "^7.0.10",
     "ethereumjs-wallet": "^1.0.1",
     "fs": "0.0.2",
-    "next": "^10.2.0",
+    "next": "^10.2.2",
     "next-routes": "^1.4.2",
     "openzeppelin-solidity": "^4.1.0",
     "prop-types": "^15.7.2",
